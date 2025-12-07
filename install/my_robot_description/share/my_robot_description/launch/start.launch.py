@@ -66,35 +66,35 @@ def generate_launch_description():
     )
 
     # 5) SLAM (optional but you already set this up)
-    slam_launch = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource([
-        os.path.join(
-            get_package_share_directory('slam_toolbox'),
-            'launch',
-            'online_async_launch.py'
-        )
-    ]),
-    launch_arguments={
-        'slam_params_file': slam_params,
-        'use_sim_time': 'true',
-    }.items(),
-    )
+    # slam_launch = IncludeLaunchDescription(
+    # PythonLaunchDescriptionSource([
+    #     os.path.join(
+    #         get_package_share_directory('slam_toolbox'),
+    #         'launch',
+    #         'online_async_launch.py'
+    #     )
+    # ]),
+    # launch_arguments={
+    #     'slam_params_file': slam_params,
+    #     'use_sim_time': 'true',
+    # }.items(),
+    # )
 
-    # 6) Teleoperation node (optional to include here; otherwise run manually)
-    teleop_node = Node(
-        package='teleop_twist_keyboard',
-        executable='teleop_twist_keyboard',
-        name='teleop',
-        output='screen',
-        emulate_tty=True,
-        prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
-    )
+    # # 6) Teleoperation node (optional to include here; otherwise run manually)
+    # teleop_node = Node(
+    #     package='teleop_twist_keyboard',
+    #     executable='teleop_twist_keyboard',
+    #     name='teleop',
+    #     output='screen',
+    #     emulate_tty=True,
+    #     prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
+    # )
 
     return LaunchDescription([
         assessment_complete,   # world + spheres
         robot_state_publisher, # robot_description + TF
         spawn_my_robot,        # spawn robot in the world
         ros_gz_bridge,         # sensor/velocity bridge
-        slam_launch,             # mapping
-        teleop_node,           # keyboard control
+        # slam_launch,             # mapping
+        # teleop_node,           # keyboard control
     ])
