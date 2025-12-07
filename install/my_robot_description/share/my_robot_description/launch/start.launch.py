@@ -86,6 +86,7 @@ def generate_launch_description():
         executable='teleop_twist_keyboard',
         name='teleop',
         output='screen',
+        emulate_tty=True,
         prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
     )
 

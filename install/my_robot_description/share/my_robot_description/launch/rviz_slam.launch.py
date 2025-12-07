@@ -9,8 +9,6 @@ def generate_launch_description():
     # Launch arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
     rviz_config_name = LaunchConfiguration('rviz_config')
-
-    # Path to RViz config: <pkg_share>/config/<rviz_config_name>
     rviz_config = PathJoinSubstitution([
         FindPackageShare('my_robot_description'),
         'config',
@@ -21,7 +19,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        arguments=['-d', rviz_config],      # this is now a valid substitution list
+        arguments=['-d', rviz_config],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen'
     )

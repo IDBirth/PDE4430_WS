@@ -1,0 +1,27 @@
+[0.008s] Invoking command in '/home/ubu/PDE4430_WS/build/assessment_world': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ubu/PDE4430_WS/install/my_robot_description:/home/ubu/turtlebot3_ws/install/turtlebot3_teleop:/home/ubu/turtlebot3_ws/install/turtlebot3_example:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ubu/PDE4430_WS/build/assessment_world -- -j32 -l32
+[0.111s] Invoked command in '/home/ubu/PDE4430_WS/build/assessment_world' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ubu/PDE4430_WS/install/my_robot_description:/home/ubu/turtlebot3_ws/install/turtlebot3_teleop:/home/ubu/turtlebot3_ws/install/turtlebot3_example:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/ubu/PDE4430_WS/build/assessment_world -- -j32 -l32
+[0.117s] Invoking command in '/home/ubu/PDE4430_WS/build/assessment_world': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ubu/PDE4430_WS/install/my_robot_description:/home/ubu/turtlebot3_ws/install/turtlebot3_teleop:/home/ubu/turtlebot3_ws/install/turtlebot3_example:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ubu/PDE4430_WS/build/assessment_world
+[0.123s] -- Install configuration: ""
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//worlds
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//worlds/assessment.sdf
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//launch
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//launch/spawn_spheres.launch.py
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//launch/assessment_complete.launch.py
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world//launch/assessment_world.launch.py
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/lib/assessment_world/spawn_spheres.py
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/ament_index/resource_index/package_run_dependencies/assessment_world
+[0.123s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/ament_index/resource_index/parent_prefix_path/assessment_world
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/environment/ament_prefix_path.sh
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/environment/ament_prefix_path.dsv
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/environment/path.sh
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/environment/path.dsv
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/local_setup.bash
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/local_setup.sh
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/local_setup.zsh
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/local_setup.dsv
+[0.124s] -- Installing: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/package.dsv
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/ament_index/resource_index/packages/assessment_world
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/cmake/assessment_worldConfig.cmake
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/cmake/assessment_worldConfig-version.cmake
+[0.124s] -- Up-to-date: /home/ubu/PDE4430_WS/install/assessment_world/share/assessment_world/package.xml
+[0.125s] Invoked command in '/home/ubu/PDE4430_WS/build/assessment_world' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ubu/PDE4430_WS/install/my_robot_description:/home/ubu/turtlebot3_ws/install/turtlebot3_teleop:/home/ubu/turtlebot3_ws/install/turtlebot3_example:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/ubu/PDE4430_WS/build/assessment_world
