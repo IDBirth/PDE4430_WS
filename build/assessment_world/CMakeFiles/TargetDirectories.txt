@@ -1,0 +1,9 @@
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/uninstall.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/assessment_world_uninstall.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/test.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/edit_cache.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/rebuild_cache.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/list_install_components.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/install.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/install/local.dir
+/home/ubu/PDE4430_WS/build/assessment_world/CMakeFiles/install/strip.dir

@@ -1,0 +1,174 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="ugv_slam_world">
+    <!-- Gravity and defaults -->
+    <gravity>0 0 -9.81</gravity>
+
+    <!-- Ground & sun from default models -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- LEFT GOAL (static, blue) -->
+    <model name="goal_left">
+      <static>true</static>
+      <!-- x y z roll pitch yaw -->
+      <!-- 1 m tall, 0.8 m wide, 0.1 m deep, centered at x = -1.5 -->
+      <pose>-1.5 0 0.5 0 0 0</pose>
+      <link name="goal_left_link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.1 0.8 1.0</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.1 0.8 1.0</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Blue</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- RIGHT GOAL (static, red) -->
+    <model name="goal_right">
+      <static>true</static>
+      <pose>1.5 0 0.5 0 0 0</pose>
+      <link name="goal_right_link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.1 0.8 1.0</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.1 0.8 1.0</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Red</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- BALL TEMPLATE:
+         radius = 0.015 m (diameter 0.03 m), dynamic -->
+    <model name="ball_1">
+      <static>false</static>
+      <pose>0.0 0.4 0.015 0 0 0</pose>
+      <link name="ball_1_link">
+        <inertial>
+          <mass>0.02</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="ball_2">
+      <static>false</static>
+      <pose>0.2 -0.3 0.015 0 0 0</pose>
+      <link name="ball_2_link">
+        <inertial>
+          <mass>0.02</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="ball_3">
+      <static>false</static>
+      <pose>-0.3 0.0 0.015 0 0 0</pose>
+      <link name="ball_3_link">
+        <inertial>
+          <mass>0.02</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.015</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Optional: GUI camera starting pose -->
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>0 0 5 0 1.57 0</pose>
+      </camera>
+    </gui>
+
+  </world>
+</sdf>

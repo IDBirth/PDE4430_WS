@@ -1,0 +1,53 @@
+[0.326s] Invoking command in '/home/ubu/PDE4430_WS/src/My_Robot': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ubu/PDE4430_WS/build/my_robot_description/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_robot_description build --build-base /home/ubu/PDE4430_WS/build/my_robot_description/build install --record /home/ubu/PDE4430_WS/build/my_robot_description/install.log --single-version-externally-managed install_data
+[0.441s] running egg_info
+[0.441s] creating ../../build/my_robot_description/my_robot_description.egg-info
+[0.448s] writing ../../build/my_robot_description/my_robot_description.egg-info/PKG-INFO
+[0.448s] writing dependency_links to ../../build/my_robot_description/my_robot_description.egg-info/dependency_links.txt
+[0.448s] writing requirements to ../../build/my_robot_description/my_robot_description.egg-info/requires.txt
+[0.448s] writing top-level names to ../../build/my_robot_description/my_robot_description.egg-info/top_level.txt
+[0.449s] writing manifest file '../../build/my_robot_description/my_robot_description.egg-info/SOURCES.txt'
+[0.463s] reading manifest file '../../build/my_robot_description/my_robot_description.egg-info/SOURCES.txt'
+[0.464s] writing manifest file '../../build/my_robot_description/my_robot_description.egg-info/SOURCES.txt'
+[0.464s] running build
+[0.464s] running build_py
+[0.464s] creating /home/ubu/PDE4430_WS/build/my_robot_description/build
+[0.464s] creating /home/ubu/PDE4430_WS/build/my_robot_description/build/lib
+[0.464s] creating /home/ubu/PDE4430_WS/build/my_robot_description/build/lib/my_robot_description
+[0.464s] copying my_robot_description/__init__.py -> /home/ubu/PDE4430_WS/build/my_robot_description/build/lib/my_robot_description
+[0.464s] running install
+[0.467s] running install_lib
+[0.474s] creating /home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages/my_robot_description
+[0.474s] copying /home/ubu/PDE4430_WS/build/my_robot_description/build/lib/my_robot_description/__init__.py -> /home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages/my_robot_description
+[0.475s] byte-compiling /home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages/my_robot_description/__init__.py to __init__.cpython-312.pyc
+[0.475s] running install_data
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/ament_index
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/ament_index/resource_index
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/ament_index/resource_index/packages
+[0.475s] copying resource/my_robot_description -> /home/ubu/PDE4430_WS/install/my_robot_description/share/ament_index/resource_index/packages
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description
+[0.475s] copying package.xml -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description
+[0.475s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch
+[0.475s] copying launch/gazebo_slam.launch.py -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch
+[0.475s] copying launch/rviz_slam.launch.py -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch
+[0.476s] copying launch/gazebo.launch.py -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch
+[0.476s] copying launch/display.launch.py -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch
+[0.476s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/urdf
+[0.476s] copying urdf/materials.xacro -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/urdf
+[0.476s] copying urdf/My_Robot.xacro -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/urdf
+[0.476s] copying urdf/My_Robot.ros2control -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/urdf
+[0.476s] copying urdf/My_Robot.gazebo -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/urdf
+[0.476s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/meshes
+[0.476s] copying meshes/base_link.stl -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/meshes
+[0.476s] copying meshes/right_wheel_1.stl -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/meshes
+[0.476s] copying meshes/lidar_1.stl -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/meshes
+[0.476s] copying meshes/left_wheel_1.stl -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/meshes
+[0.476s] creating /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/config
+[0.476s] copying config/display.rviz -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/config
+[0.476s] copying config/gazebo.rviz -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/config
+[0.476s] copying config/ros_gz_bridge_gazebo.yaml -> /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/config
+[0.476s] running install_egg_info
+[0.484s] Copying ../../build/my_robot_description/my_robot_description.egg-info to /home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages/my_robot_description-0.0.0-py3.12.egg-info
+[0.484s] running install_scripts
+[0.538s] writing list of installed files to '/home/ubu/PDE4430_WS/build/my_robot_description/install.log'
+[0.549s] Invoked command in '/home/ubu/PDE4430_WS/src/My_Robot' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/ubu/PDE4430_WS/build/my_robot_description/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_robot_description build --build-base /home/ubu/PDE4430_WS/build/my_robot_description/build install --record /home/ubu/PDE4430_WS/build/my_robot_description/install.log --single-version-externally-managed install_data
