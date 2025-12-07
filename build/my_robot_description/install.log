@@ -2,8 +2,9 @@
 /home/ubu/PDE4430_WS/install/my_robot_description/lib/python3.12/site-packages/my_robot_description/__pycache__/__init__.cpython-312.pyc
 /home/ubu/PDE4430_WS/install/my_robot_description/share/ament_index/resource_index/packages/my_robot_description
 /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/package.xml
-/home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/gazebo_slam.launch.py
+/home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/OLD_gazebo_slam.launch.py
 /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/start.launch.py
+/home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/slam_gazebo.launch.py
 /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/rviz_slam.launch.py
 /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/gazebo.launch.py
 /home/ubu/PDE4430_WS/install/my_robot_description/share/my_robot_description/launch/display.launch.py

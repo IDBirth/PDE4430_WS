@@ -1,3 +1,4 @@
+README.md
 package.xml
 setup.cfg
 setup.py
@@ -11,10 +12,11 @@ config/display.rviz
 config/gazebo.rviz
 config/mapper_params_online_async.yaml
 config/ros_gz_bridge_gazebo.yaml
+launch/OLD_gazebo_slam.launch.py
 launch/display.launch.py
 launch/gazebo.launch.py
-launch/gazebo_slam.launch.py
 launch/rviz_slam.launch.py
+launch/slam_gazebo.launch.py
 launch/start.launch.py
 meshes/base_link.stl
 meshes/left_wheel_1.stl

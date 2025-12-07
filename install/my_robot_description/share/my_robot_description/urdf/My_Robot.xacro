@@ -6,12 +6,11 @@
 <xacro:include filename="$(find my_robot_description)/urdf/My_Robot.gazebo" />
 <link name="base_link">
   <inertial>
-    <origin xyz="-0.040035527046847215 1.4254718786836187e-07 0.18576319015090628" rpy="0 0 0"/>
-    <mass value="22.51991652849534"/>
-    <inertia ixx="0.608319" iyy="0.424091" izz="0.671314" ixy="-1e-06" iyz="1e-06" ixz="-0.004979"/>
-    <!-- <mass value="8.0"/>
-    <inertia ixx="0.05" iyy="0.04" izz="0.06" ixy="0.0" iyz="0.0" ixz="0.0"/> -->
+  <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  <mass value="8.0"/>
+  <inertia ixx="0.05" iyy="0.04" izz="0.06" ixy="0" iyz="0" ixz="0"/>
   </inertial>
+
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>

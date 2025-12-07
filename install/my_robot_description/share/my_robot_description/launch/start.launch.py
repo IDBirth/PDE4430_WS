@@ -66,12 +66,18 @@ def generate_launch_description():
     )
 
     # 5) SLAM (optional but you already set this up)
-    slam_node = Node(
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        name='slam_toolbox',
-        output='screen',
-        parameters=[slam_params, {'use_sim_time': True}],
+    slam_launch = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource([
+        os.path.join(
+            get_package_share_directory('slam_toolbox'),
+            'launch',
+            'online_async_launch.py'
+        )
+    ]),
+    launch_arguments={
+        'slam_params_file': slam_params,
+        'use_sim_time': 'true',
+    }.items(),
     )
 
     # 6) Teleoperation node (optional to include here; otherwise run manually)
@@ -88,6 +94,6 @@ def generate_launch_description():
         robot_state_publisher, # robot_description + TF
         spawn_my_robot,        # spawn robot in the world
         ros_gz_bridge,         # sensor/velocity bridge
-        slam_node,             # mapping
+        slam_launch,             # mapping
         teleop_node,           # keyboard control
     ])

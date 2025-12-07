@@ -5,23 +5,23 @@
 
 <gazebo reference="base_link">
   <material>${body_color}</material>
-  <mu1>0</mu1> 
-  <mu2>0</mu2> 
+  <mu1>0.02</mu1> 
+  <mu2>0.02</mu2> 
   <self_collide>true</self_collide>
   <gravity>true</gravity>
 </gazebo>
 
 <gazebo reference="left_wheel_1">
   <material>RGBA(1 0 0 1)</material>
-  <mu1>1</mu1> 
-  <mu2>1</mu2> 
+  <mu1>1.0</mu1> 
+  <mu2>1.0</mu2> 
   <self_collide>true</self_collide>
 </gazebo>
 
 <gazebo reference="right_wheel_1">
   <material>RGBA(0 1 0 1)</material>
-  <mu1>1</mu1> 
-  <mu2>1</mu2> 
+  <mu1>1.0</mu1> 
+  <mu2>1.0</mu2> 
   <self_collide>true</self_collide>
 </gazebo>
 
