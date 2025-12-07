@@ -109,17 +109,15 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          left_wheel_1:
-            {}
-          lidar_1:
-            {}
-          right_wheel_1:
-            {}
         map:
-          {}
-        odom:
-          {}
+          odom:
+            base_link:
+              left_wheel_1:
+                {}
+              lidar_1:
+                {}
+              right_wheel_1:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -268,7 +266,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 45.89201736450195
+      Scale: 69.23389434814453
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
       X: -4.371151440807353e-09
@@ -288,5 +286,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 417
-  Y: 83
+  X: 587
+  Y: 95
