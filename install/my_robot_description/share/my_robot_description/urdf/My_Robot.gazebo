@@ -58,7 +58,9 @@
         <right_joint>right_wheel_joint</right_joint>
         
         <wheel_separation>0.352</wheel_separation>
-        <wheel_radius>0.05</wheel_radius>
+        <!-- <wheel_radius>0.05</wheel_radius> -->
+        <wheel_radius>0.045</wheel_radius>
+        <!-- <wheel_radius>0.055</wheel_radius> -->
 
 
         <odom_publish_frequency>30</odom_publish_frequency>
@@ -77,7 +79,7 @@
           <pose>0 0 0 0 0 0</pose>
           <topic>/scan</topic>
           <gz_frame_id>lidar_1</gz_frame_id>          
-          <update_rate>10</update_rate>
+          <update_rate>60</update_rate>
           <lidar>
             <scan>
               <horizontal>
@@ -95,7 +97,7 @@
             </scan>
             <range>
               <min>0.08</min>
-              <max>10.0</max>
+              <max>25.0</max>
               <resolution>0.01</resolution>
             </range>
           </lidar>

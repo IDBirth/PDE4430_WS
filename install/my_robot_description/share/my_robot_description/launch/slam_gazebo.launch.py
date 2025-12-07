@@ -34,7 +34,7 @@ def generate_launch_description():
 
     # Delay RViz by 3 seconds after launch start
     rviz_slam_delayed = TimerAction(
-        period=3.0,
+        period=6.0,
         actions=[rviz_slam]
     )
 
