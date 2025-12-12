@@ -1,2 +1,1 @@
-source;share/assessment_world/environment/ament_prefix_path.sh
-source;share/assessment_world/environment/path.sh
+/home/ubu/PDE4430_WS/build/assessment_world/ament_cmake_environment_hooks/local_setup.dsv

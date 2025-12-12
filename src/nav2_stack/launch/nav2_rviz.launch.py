@@ -26,7 +26,7 @@ def generate_launch_description():
             'maps',
             'map.yaml'                                                  # change if your map name is different
         ),
-        description='/home/ubu/PDE4430_WS/src/Nav2_stack/maps/map.yaml'
+        description='/home/ubu/PDE4430_WS/src/nav2_stack/maps/map.yaml'
     )
 
     declare_params_file = DeclareLaunchArgument(

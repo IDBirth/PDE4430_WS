@@ -4,6 +4,8 @@
 <xacro:include filename="$(find my_robot_description)/urdf/materials.xacro" />
 <xacro:include filename="$(find my_robot_description)/urdf/My_Robot.ros2control" />
 <xacro:include filename="$(find my_robot_description)/urdf/My_Robot.gazebo" />
+
+
 <link name="base_link">
   <inertial>
   <origin xyz="0 0 0.1" rpy="0 0 0"/>
