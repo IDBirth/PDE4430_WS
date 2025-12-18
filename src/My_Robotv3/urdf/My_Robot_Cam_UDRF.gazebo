@@ -29,6 +29,13 @@
     <self_collide>false</self_collide>
   </gazebo>
 
+  <gazebo reference="${prefix}caster_wheel_1">
+    <material>${body_color}</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <self_collide>false</self_collide>
+  </gazebo>
+
   <!-- Core Gazebo systems: sensors + joint states + diff drive -->
   <gazebo>
         <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">

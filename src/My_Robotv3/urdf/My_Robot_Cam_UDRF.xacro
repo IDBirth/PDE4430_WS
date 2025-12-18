@@ -138,6 +138,28 @@
       xyz="-0.024 0.2012 0.232" rpy="0 0 0" material_name="silver"/>
   </link>
 
+  <!-- Caster wheel (mesh-based, template aligned with back files) -->
+  <link name="${prefix}caster_wheel_1">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file://${mesh_dir}/caster_wheel_1.stl" scale="${mesh_scale}"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file://${mesh_dir}/caster_wheel_1.stl" scale="${mesh_scale}"/>
+      </geometry>
+    </collision>
+  </link>
+
   <!-- Arms -->
   <link name="${prefix}left_arm_1">
     <inertial>
@@ -205,6 +227,12 @@
     <axis xyz="0 -1 0"/>
     <limit effort="5.0" velocity="30.0"/>
     <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="${prefix}caster_wheel_joint" type="fixed">
+    <origin xyz="-0.8 0 0" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}caster_wheel_1"/>
   </joint>
 
   <joint name="${prefix}left_arm" type="continuous">
