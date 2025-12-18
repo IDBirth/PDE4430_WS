@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<robot name="my_robot_v3" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Gazebo (ros_gz_sim) tuning. Keep this file Gazebo-only. -->
+
+  <xacro:property name="body_color" value="Gazebo/Silver"/>
+
+  <!-- Base contact tuning -->
+  <gazebo reference="${prefix}base_link">
+    <material>${body_color}</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <self_collide>false</self_collide>
+    <gravity>true</gravity>
+  </gazebo>
+
+  <!-- Wheels -->
+  <gazebo reference="${prefix}left_wheel_1">
+    <material>${body_color}</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <gazebo reference="${prefix}right_wheel_1">
+    <material>${body_color}</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <!-- Core Gazebo systems: sensors + joint states + diff drive -->
+  <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+
+        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+          <topic>/joint_states</topic>
+        </plugin>
+
+      <plugin
+        filename="gz-sim-diff-drive-system"
+        name="gz::sim::systems::DiffDrive">
+        <left_joint>${prefix}left_wheel</left_joint>
+        <right_joint>${prefix}right_wheel</right_joint>
+
+        <wheel_separation>0.460</wheel_separation>
+        <wheel_radius>0.046</wheel_radius>
+
+        <odom_publish_frequency>30</odom_publish_frequency>
+        <topic>/cmd_vel</topic>
+        <tf_topic>/tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <odom_topic>/odom</odom_topic>
+        <child_frame_id>${prefix}base_link</child_frame_id>
+      </plugin>
+  </gazebo>
+
+  <!-- Sensor housings (visual/collision only unless you add <sensor> tags here) -->
+  <gazebo reference="${prefix}camera_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+
+    <!-- Gazebo Sim RGB-D camera sensor (publishes gz topics under /camera/*) -->
+    <sensor name="camera" type="rgbd_camera">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>10.0</update_rate>
+
+      <!-- Base topic: /camera/image, /camera/camera_info, /camera/points -->
+      <topic>/camera</topic>
+
+      <!-- Publish data in the optical frame (X right, Y down, Z forward) -->
+      <gz_frame_id>${prefix}camera_optical_frame</gz_frame_id>
+
+      <camera>
+        <horizontal_fov>1.047198</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>10.0</far>
+        </clip>
+      </camera>
+
+      <!-- RGBD extras -->
+      <baseline>0.2</baseline>
+      <pointCloudCutoff>0.5</pointCloudCutoff>
+      <pointCloudCutoffMax>10.0</pointCloudCutoffMax>
+    </sensor>
+  </gazebo>
+  <gazebo reference="${prefix}lidar_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+
+    <!-- Gazebo Sim 2D lidar (publishes gz topic /scan and /scan/points) -->
+    <sensor name="lidar" type="gpu_lidar">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+
+      <!-- Topic becomes /scan -->
+      <topic>/scan</topic>
+      <gz_frame_id>${prefix}laser_frame</gz_frame_id>
+
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+
+  <!-- Arms -->
+  <gazebo reference="${prefix}left_arm_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <gazebo reference="${prefix}right_arm_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+</robot>
