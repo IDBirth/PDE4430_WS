@@ -1,194 +1,227 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <robot name="My_Robot_Cam_UDRF" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:include filename="$(find My_Robot_Cam_UDRF_description)/urdf/materials.xacro" />
-<xacro:include filename="$(find My_Robot_Cam_UDRF_description)/urdf/My_Robot_Cam_UDRF.ros2control" />
-<xacro:include filename="$(find My_Robot_Cam_UDRF_description)/urdf/My_Robot_Cam_UDRF.gazebo" />
-<link name="base_link">
-  <inertial>
-    <origin xyz="-0.07327696957668513 0.18599999999999897 0.03780217439911652" rpy="0 0 0"/>
-    <mass value="234.7770329034331"/>
-    <inertia ixx="30.45054" iyy="20.65215" izz="32.896368" ixy="-0.0" iyz="-0.0" ixz="-0.345272"/>
-  </inertial>
-  <visual>
+  <!--
+    Cleaned / ROS2-friendly Xacro.
+
+    Notes:
+    - Link meshes appear to be exported in *assembly coordinates* (common from CAD exports).
+      That’s why many links have a non-zero <visual>/<collision> origin that is "cancelled" by
+      the joint origin.
+    - Default names are preserved (base_link, camera_1, lidar_1, ...) so existing RViz configs
+      and launch files keep working.
+  -->
+
+  <!-- Optional prefix for multi-robot use -->
+  <xacro:arg name="prefix" default=""/>
+  <xacro:property name="prefix" value="$(arg prefix)"/>
+
+  <!-- Prefer package:// URIs (cleaner than file:// + find substitutions) -->
+  <xacro:property name="pkg_name" value="My_Robot_Cam_UDRF_description"/>
+  <xacro:property name="mesh_scale" value="0.001 0.001 0.001"/>
+
+  <!-- Common materials / gazebo / control (kept as separate include files) -->
+  <xacro:include filename="$(find-pkg-share ${pkg_name})/urdf/materials.xacro"/>
+  <xacro:include filename="$(find-pkg-share ${pkg_name})/urdf/My_Robot_Cam_UDRF.ros2control"/>
+  <xacro:include filename="$(find-pkg-share ${pkg_name})/urdf/My_Robot_Cam_UDRF.gazebo"/>
+
+  <!-- Small helper macro to reduce repetition -->
+  <xacro:macro name="mesh_visual_collision" params="mesh_path xyz rpy material_name">
+    <visual>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+      <geometry>
+        <mesh filename="${mesh_path}" scale="${mesh_scale}"/>
+      </geometry>
+      <material name="${material_name}"/>
+    </visual>
+    <collision>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+      <geometry>
+        <mesh filename="${mesh_path}" scale="${mesh_scale}"/>
+      </geometry>
+    </collision>
+  </xacro:macro>
+
+  <!-- Base -->
+  <!-- base_footprint is commonly expected by Nav2; keep it aligned with base_link for now -->
+  <link name="${prefix}base_footprint">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="${prefix}base_footprint_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
+    <parent link="${prefix}base_footprint"/>
+    <child link="${prefix}base_link"/>
+  </joint>
+
+  <link name="${prefix}base_link">
+    <inertial>
+      <origin xyz="-0.07327696957668513 0.18599999999999897 0.03780217439911652" rpy="0 0 0"/>
+      <mass value="234.7770329034331"/>
+      <inertia ixx="30.45054" iyy="20.65215" izz="32.896368" ixy="-0.0" iyz="-0.0" ixz="-0.345272"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/base_link.stl"
+      xyz="0 0 0" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <!-- Sensors (visual geometry only; Gazebo sensors/plugins can be added in My_Robot_Cam_UDRF.gazebo) -->
+  <link name="${prefix}camera_1">
+    <inertial>
+      <origin xyz="0 0 -0.017" rpy="0 0 0"/>
+      <mass value="1.191651999466405"/>
+      <inertia ixx="0.000907" iyy="0.000363" izz="0.00104" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/camera_1.stl"
+      xyz="-0.36 -0.186 -0.344" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <!-- Standard ROS camera optical frame (handy for image pipelines) -->
+  <link name="${prefix}camera_optical_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <link name="${prefix}lidar_1">
+    <inertial>
+      <origin xyz="0.02 0 -0.007" rpy="0 0 0"/>
+      <mass value="2.1007654145366375"/>
+      <inertia ixx="0.001356" iyy="0.001356" izz="0.002034" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/lidar_1.stl"
+      xyz="-0.002 -0.186 -0.384" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <link name="${prefix}laser_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Wheels -->
+  <link name="${prefix}left_wheel_1">
+    <inertial>
+      <origin xyz="0 0.023 -0.03" rpy="0 0 0"/>
+      <mass value="1.555503053757221"/>
+      <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/left_wheel_1.stl"
+      xyz="-0.024 -0.5732 0.232" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <link name="${prefix}right_wheel_1">
+    <inertial>
+      <origin xyz="0 -0.023 -0.03" rpy="0 0 0"/>
+      <mass value="1.5555030537572214"/>
+      <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/right_wheel_1.stl"
+      xyz="-0.024 0.2012 0.232" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <!-- Arms -->
+  <link name="${prefix}left_arm_1">
+    <inertial>
+      <origin xyz="0.1917093322749274 -0.002691315286684093 -0.02" rpy="0 0 0"/>
+      <mass value="2.420566632833367"/>
+      <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="0.000981" iyz="-0.0" ixz="0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/left_arm_1.stl"
+      xyz="0.033381 -0.517012 0.2155" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <link name="${prefix}right_arm_1">
+    <inertial>
+      <origin xyz="0.1917093322749274 0.002692315286683955 -0.02" rpy="0 0 0"/>
+      <mass value="2.420566632833367"/>
+      <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="-0.000981" iyz="0.0" ixz="0.0"/>
+    </inertial>
+
+    <xacro:mesh_visual_collision
+      mesh_path="package://${pkg_name}/meshes/right_arm_1.stl"
+      xyz="0.033381 0.145013 0.2155" rpy="0 0 0" material_name="silver"/>
+  </link>
+
+  <!-- Joints -->
+  <joint name="${prefix}camera_joint" type="fixed">
+    <origin xyz="0.36 0.186 0.344" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}camera_1"/>
+  </joint>
+
+  <joint name="${prefix}camera_optical_joint" type="fixed">
+    <!-- camera_optical_frame: X right, Y down, Z forward -->
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+    <parent link="${prefix}camera_1"/>
+    <child link="${prefix}camera_optical_frame"/>
+  </joint>
+
+  <joint name="${prefix}lidar_joint" type="fixed">
+    <origin xyz="0.002 0.186 0.384" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}lidar_1"/>
+  </joint>
+
+  <joint name="${prefix}laser_frame_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+    <parent link="${prefix}lidar_1"/>
+    <child link="${prefix}laser_frame"/>
+  </joint>
 
-<link name="camera_1">
-  <inertial>
-    <origin xyz="1.6653345369377348e-16 -5.551115123125783e-17 -0.017000000000000015" rpy="0 0 0"/>
-    <mass value="1.191651999466405"/>
-    <inertia ixx="0.000907" iyy="0.000363" izz="0.00104" ixy="0.0" iyz="0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.36 -0.186 -0.344" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.36 -0.186 -0.344" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <joint name="${prefix}left_wheel" type="continuous">
+    <origin xyz="0.024 0.5732 -0.232" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}left_wheel_1"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="5.0" velocity="30.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
 
-<link name="lidar_1">
-  <inertial>
-    <origin xyz="0.02000000000000003 -8.326672684688674e-17 -0.007000000000000117" rpy="0 0 0"/>
-    <mass value="2.1007654145366375"/>
-    <inertia ixx="0.001356" iyy="0.001356" izz="0.002034" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.002 -0.186 -0.384" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.002 -0.186 -0.384" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <joint name="${prefix}right_wheel" type="continuous">
+    <origin xyz="0.024 -0.2012 -0.232" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}right_wheel_1"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="5.0" velocity="30.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
 
-<link name="left_wheel_1">
-  <inertial>
-    <origin xyz="1.491862189340054e-16 0.02300000000000002 -0.030000000000000054" rpy="0 0 0"/>
-    <mass value="1.555503053757221"/>
-    <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.024 -0.5732 0.232" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.024 -0.5732 0.232" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/left_wheel_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <joint name="${prefix}left_arm" type="continuous">
+    <origin xyz="-0.033381 0.517012 -0.2155" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}left_arm_1"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="2.0" velocity="2.0"/>
+    <dynamics damping="0.2" friction="0.1"/>
+  </joint>
 
-<link name="right_wheel_1">
-  <inertial>
-    <origin xyz="-2.42861286636753e-17 -0.023000000000000104 -0.03" rpy="0 0 0"/>
-    <mass value="1.5555030537572214"/>
-    <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.024 0.2012 0.232" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.024 0.2012 0.232" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/right_wheel_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="left_arm_1">
-  <inertial>
-    <origin xyz="0.1917093322749274 -0.002691315286684093 -0.02000000000000013" rpy="0 0 0"/>
-    <mass value="2.420566632833367"/>
-    <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="0.000981" iyz="-0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.033381 -0.517012 0.2155" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/left_arm_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.033381 -0.517012 0.2155" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/left_arm_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="right_arm_1">
-  <inertial>
-    <origin xyz="0.1917093322749274 0.002692315286683955 -0.020000000000000073" rpy="0 0 0"/>
-    <mass value="2.420566632833367"/>
-    <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="-0.000981" iyz="0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.033381 0.145013 0.2155" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/right_arm_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.033381 0.145013 0.2155" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find My_Robot_Cam_UDRF_description)/meshes/right_arm_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<joint name="camera_joint" type="fixed">
-  <origin xyz="0.36 0.186 0.344" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="camera_1"/>
-</joint>
-
-<joint name="lidar_joint" type="fixed">
-  <origin xyz="0.002 0.186 0.384" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="lidar_1"/>
-</joint>
-
-<joint name="left_wheel" type="continuous">
-  <origin xyz="0.024 0.5732 -0.232" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="left_wheel_1"/>
-  <axis xyz="0.0 1.0 0.0"/>
-</joint>
-
-<joint name="right_wheel" type="continuous">
-  <origin xyz="0.024 -0.2012 -0.232" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="right_wheel_1"/>
-  <axis xyz="0.0 -1.0 0.0"/>
-</joint>
-
-<joint name="left_arm" type="continuous">
-  <origin xyz="-0.033381 0.517012 -0.2155" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="left_arm_1"/>
-  <axis xyz="0.0 0.0 -1.0"/>
-</joint>
-
-<joint name="right_arm" type="continuous">
-  <origin xyz="-0.033381 -0.145013 -0.2155" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="right_arm_1"/>
-  <axis xyz="0.0 0.0 1.0"/>
-</joint>
+  <joint name="${prefix}right_arm" type="continuous">
+    <origin xyz="-0.033381 -0.145013 -0.2155" rpy="0 0 0"/>
+    <parent link="${prefix}base_link"/>
+    <child link="${prefix}right_arm_1"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2.0" velocity="2.0"/>
+    <dynamics damping="0.2" friction="0.1"/>
+  </joint>
 
 </robot>

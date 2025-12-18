@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<robot name="My_Robot_Cam_UDRF" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Gazebo (ros_gz_sim) tuning. Keep this file Gazebo-only. -->
+
+  <xacro:property name="body_color" value="Gazebo/Silver"/>
+
+  <!-- Base contact tuning -->
+  <gazebo reference="${prefix}base_link">
+    <material>${body_color}</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <self_collide>false</self_collide>
+    <gravity>true</gravity>
+  </gazebo>
+
+  <!-- Wheels -->
+  <gazebo reference="${prefix}left_wheel_1">
+    <material>${body_color}</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <gazebo reference="${prefix}right_wheel_1">
+    <material>${body_color}</material>
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <!-- Sensor housings (visual/collision only unless you add <sensor> tags here) -->
+  <gazebo reference="${prefix}camera_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <gazebo reference="${prefix}lidar_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <!-- Arms -->
+  <gazebo reference="${prefix}left_arm_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <gazebo reference="${prefix}right_arm_1">
+    <material>${body_color}</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+</robot>
