@@ -23,6 +23,18 @@
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 
+# Arm joint position commands (rad)
+- ros_topic_name: "/left_arm/cmd_pos"
+  gz_topic_name: "/model/my_robot_v3/joint/left_arm/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+- ros_topic_name: "/right_arm/cmd_pos"
+  gz_topic_name: "/model/my_robot_v3/joint/right_arm/cmd_pos"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+
 - ros_topic_name: "/odom"
   gz_topic_name: "/odom"
   ros_type_name: "nav_msgs/msg/Odometry"

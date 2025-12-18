@@ -43,9 +43,9 @@ def generate_launch_description():
                 "-topic", "/robot_description",
                 "-name", "my_robot_v3",
                 "-allow_renaming", "false",  # prevents "_1" duplicate
-                "-x", "0.0",
-                "-y", "0.0",
-                "-z", "0.32",
+                "-x", "-3.0",
+                "-y", "3.0",
+                "-z", "1.0",
                 "-Y", "0.0"
             ],
             output='screen'
@@ -59,9 +59,17 @@ def generate_launch_description():
         output='screen'
     )
 
+    arm_control = Node(
+        package='my_robot_v3_description',
+        executable='arm_control',
+        name='arm_control',
+        output='screen'
+    )
+
     return LaunchDescription([
         gazebo,
         spawn_robot,
         ros_gz_bridge,
         robot_state_publisher,
+        arm_control,
     ])

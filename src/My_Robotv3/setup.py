@@ -27,6 +27,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'arm_control = my_robot_v3_description.arm_control:main',
         ],
     },
 )

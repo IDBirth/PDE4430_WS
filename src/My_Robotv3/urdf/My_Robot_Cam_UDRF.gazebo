@@ -71,9 +71,6 @@
       <!-- Base topic: /camera/image, /camera/camera_info, /camera/points -->
       <topic>/camera</topic>
 
-      <!-- Publish data in the optical frame (X right, Y down, Z forward) -->
-      <gz_frame_id>${prefix}camera_optical_frame</gz_frame_id>
-
       <camera>
         <horizontal_fov>1.047198</horizontal_fov>
         <image>
@@ -86,10 +83,6 @@
         </clip>
       </camera>
 
-      <!-- RGBD extras -->
-      <baseline>0.2</baseline>
-      <pointCloudCutoff>0.5</pointCloudCutoff>
-      <pointCloudCutoffMax>10.0</pointCloudCutoffMax>
     </sensor>
   </gazebo>
   <gazebo reference="${prefix}lidar_1">
@@ -100,12 +93,10 @@
     <sensor name="lidar" type="gpu_lidar">
       <always_on>true</always_on>
       <visualize>true</visualize>
-      <update_rate>10</update_rate>
+      <update_rate>20</update_rate>
 
       <!-- Topic becomes /scan -->
       <topic>/scan</topic>
-      <gz_frame_id>${prefix}laser_frame</gz_frame_id>
-
       <lidar>
         <scan>
           <horizontal>

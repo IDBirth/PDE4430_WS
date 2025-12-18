@@ -48,9 +48,9 @@ def generate_launch_description():
                 '-topic', '/robot_description',
                 '-name', 'my_robot_v3',
                 '-allow_renaming', 'false',
-                '-x', '0.0',
-                '-y', '0.0',
-                '-z', '0.32',
+                '-x', '-3.0',
+                '-y', '3.0',
+                '-z', '1.0',
                 '-Y', '0.0',
             ],
             output='screen'
@@ -62,6 +62,13 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         parameters=[{'config_file': ros_gz_bridge_config}],
+        output='screen'
+    )
+
+    arm_control = Node(
+        package='my_robot_v3_description',
+        executable='arm_control',
+        name='arm_control',
         output='screen'
     )
 
@@ -95,6 +102,7 @@ def generate_launch_description():
         robot_state_publisher, # robot_description + TF
         spawn_my_robot,        # spawn robot in the world
         ros_gz_bridge,         # sensor/velocity bridge
+        arm_control,           # arm open/close services
         # slam_launch,             # mapping
         # teleop_node,           # keyboard control
     ])

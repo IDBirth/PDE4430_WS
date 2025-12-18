@@ -65,9 +65,9 @@ def generate_launch_description():
                 '-topic', '/robot_description',
                 '-name', 'my_robot_v3',
                 '-allow_renaming', 'false',
-                '-x', '0.0',
-                '-y', '0.0',
-                '-z', '0.32',
+                '-x', '-3.0',
+                '-y', '3.0',
+                '-z', '1.0',
                 '-Y', '0.0',
             ],
             output='screen'
@@ -106,6 +106,13 @@ def generate_launch_description():
         prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
     )
 
+    arm_control = Node(
+        package='my_robot_v3_description',
+        executable='arm_control',
+        name='arm_control',
+        output='screen'
+    )
+
     return LaunchDescription([
         assessment_complete,   # Gazebo world immediately
         robot_state_publisher, # /robot_description + TF
@@ -114,4 +121,5 @@ def generate_launch_description():
         rviz_slam_delayed,     # RViz after 3s
         spawn_my_robot,        # Spawn robot after 5s
         teleop_node,           # Opens Terminal for Teleop
+        arm_control,
     ])
