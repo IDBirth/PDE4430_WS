@@ -1,0 +1,15 @@
+slam_toolbox:
+  ros__parameters:
+    mode: "mapping"
+    use_sim_time: true
+
+    odom_frame: "odom"
+    map_frame: "map"
+    base_frame: "base_link"
+    scan_topic: "/scan"
+
+    transform_publish_period: 0.0167      # ~30Hz
+    minimum_time_interval: 0.0            # process every scan if possible
+    map_update_interval: 0.5              # update map every 0.5 s (faster than default 5.0)
+    scan_queue_size: 200
+    throttle_scans: 3

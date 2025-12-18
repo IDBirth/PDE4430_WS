@@ -2,12 +2,13 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'My_Robot_Cam_UDRF_description'
+package_name = 'my_robot_cam_udrf_description'
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    # This package ships data files only; install the existing Python package.
+    packages=['my_robot'],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),

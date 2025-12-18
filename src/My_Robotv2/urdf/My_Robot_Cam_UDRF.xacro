@@ -17,7 +17,7 @@
   <xacro:property name="prefix" value="$(arg prefix)"/>
 
   <!-- Prefer package:// URIs (cleaner than file:// + find substitutions) -->
-  <xacro:property name="pkg_name" value="My_Robot_Cam_UDRF_description"/>
+  <xacro:property name="pkg_name" value="my_robot_cam_udrf_description"/>
   <xacro:property name="mesh_scale" value="0.001 0.001 0.001"/>
 
   <!-- Common materials / gazebo / control (kept as separate include files) -->
