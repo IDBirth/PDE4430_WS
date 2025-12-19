@@ -252,6 +252,26 @@ ros2 launch my_robot_v3_description start.launch.py
 ros2 launch my_bot_perception ball_perception_with_goal.launch.py
 ```
 
+### Arm Control (open/close)
+
+The arm controller node is started by the v3 launch files and exposes two services:
+- `/arms/open` (opens both arms)
+- `/arms/close` (closes both arms to +/- 30 deg)
+
+Examples:
+
+```bash
+ros2 service call /arms/open std_srvs/srv/Trigger {}
+ros2 service call /arms/close std_srvs/srv/Trigger {}
+```
+
+You can also drive the joints directly:
+
+```bash
+ros2 topic pub /left_arm/cmd_pos std_msgs/msg/Float64 "{data: 0.2}"
+ros2 topic pub /right_arm/cmd_pos std_msgs/msg/Float64 "{data: -0.2}"
+```
+
 ---
 
 ## Packages
