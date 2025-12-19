@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'circle_ball_detector = my_bot_perception.circle_ball_detector:main',
             'circle_ball_visualizer = my_bot_perception.circle_ball_visualizer:main',
+            'circle_ball_node = my_bot_perception.circle_ball_node:main',
         ],
     },
 )
