@@ -5,6 +5,13 @@
 **Candidate:** Bilal Baslar (M01099599)  
 **Workspace:** `PDE4430_WS`
 
+**Submission:**
+Blog Link: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+
+Github: 'https://github.com/IDBirth/PDE4430_WS/tree/testing?tab=readme-ov-file#compliance-gazebo-ground-truth '
+
+Youtube: "https://youtu.be/FiY-CyodFZo"
+
 ---
 
 ## Abstract
@@ -46,12 +53,6 @@ Create a robot that:
 The `assessment_world` package provides an 8m x 8m arena with obstacles and randomly spawned spheres.
 
 ---
-
-## Coursework Submision
-
-Blog Link: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
-Github: 'https://github.com/IDBirth/PDE4430_WS/tree/testing?tab=readme-ov-file#compliance-gazebo-ground-truth '
-Youtube: "https://youtu.be/FiY-CyodFZo"
 
 This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar (M01099599).
 
@@ -114,9 +115,6 @@ This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar
 - URDF_1: https://a360.co/49gF3uo
 - URDF_2: https://a360.co/4s2ivoM
 
-**Issues Faced**
-- Biggest ball is too big
-
 **Between V1 and V2 Changes**
 - Added camera
 - Added arms to hold balls; arms move 30 degrees to close and work for all ball sizes
@@ -138,26 +136,41 @@ This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar
   - `caster`
 
 **Diff-drive setup**
-- https://github.com/ros-controls/ros2_controllers/tree/master/diff_drive_controller
+- Our robot uses Gazebo Sim’s DiffDrive system plugin (in My_Robot_Cam_UDRF.gazebo) to drive the left/right wheel joints.
+
+- Input: /cmd_vel (Twist: linear.x forward speed, angular.z turn rate)
+
+- Actuators: ${prefix}left_wheel and ${prefix}right_wheel (URDF joint names)
+
+- Kinematics: uses wheel_separation (distance between wheels) and wheel_radius to convert /cmd_vel into wheel angular velocities
+
+- Outputs: publishes /odom and TF (odom → base_link via /tf) at odom_publish_frequency
+
 
 **Lidar setup**
-- Needs to be like the previous
+- Configured in My_Robot_Cam_UDRF.gazebo:
+
+- Sensor type: gpu_lidar (2D planar scan)
+
+- Topic: /scan
+
+- Rate: 20 Hz
+
+- Beams: 360 samples over 360° (-π to +π)
+
+- Range: 0.12 m to 12.0 m (resolution 0.01 m)
+
+- Noise: Gaussian (stddev = 0.01)
+
+- Visualize: true (shows rays in Gazebo)
 
 **Camera**
-- https://youtu.be/jgXeIXrckBc
-- https://www.youtube.com/watch?v=5yx5zpu6nk8
-- https://chatgpt.com/share/694367a3-eb60-800d-a04e-d29e33882437
+- In ROS2 we bridge the Gazebo camera topics to sensor_msgs/Image and sensor_msgs/CameraInfo. TF provides base_link → camera_1 → camera_optical_frame so vision nodes can transform detections into the robot frame.
 
 **Caster wheel**
 - Decreased the friction to 0.1:
   - `<mu1>0.1</mu1>`
   - `<mu2>0.1</mu2>`
-
-**Major issue after 1st test on My_Robotv3**
-- Base link is off
-- Arms move while driving, almost every link is off
-- Wheels aren't able to spin freely
-- Success: camera works and publishes to `/image_raw/image`
 
 **Teleop Plan**
 - Use the built-in teleop node
