@@ -16,7 +16,7 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare('assessment_world'),
                 'launch',
-                'assessment_world.launch.py'
+                'assessment_world_complete.launch.py'
             ])
         ])
     )
