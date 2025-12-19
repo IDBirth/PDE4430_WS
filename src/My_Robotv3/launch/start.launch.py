@@ -97,6 +97,19 @@ def generate_launch_description():
         prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
     )
 
+    ball_perception = TimerAction(
+        period=5.0,
+        actions=[IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare('my_bot_perception'),
+                    'launch',
+                    'ball_perception_with_goal.launch.py'
+                ])
+            ])
+        )]
+    )
+
     
     return LaunchDescription([
         assessment_complete,   # world + spheres
@@ -104,6 +117,7 @@ def generate_launch_description():
         spawn_my_robot,        # spawn robot in the world
         ros_gz_bridge,         # sensor/velocity bridge
         arm_control,           # arm open/close services
+        ball_perception,       # ball detection + goal transform
         # slam_launch,             # mapping
         teleop_node,           # keyboard control
     ])

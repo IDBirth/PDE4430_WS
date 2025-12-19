@@ -1,4 +1,6 @@
 from setuptools import setup
+import os
+from glob import glob
 
 package_name = 'my_bot_perception'
 
@@ -10,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
          ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -23,6 +26,7 @@ setup(
             'circle_ball_detector = my_bot_perception.circle_ball_detector:main',
             'circle_ball_visualizer = my_bot_perception.circle_ball_visualizer:main',
             'circle_ball_node = my_bot_perception.circle_ball_node:main',
+            'ball_goal_transformer = my_bot_perception.ball_goal_transformer:main',
         ],
     },
 )

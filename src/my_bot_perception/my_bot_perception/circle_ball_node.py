@@ -16,10 +16,10 @@ import numpy as np
 class CircleBallNode(Node):
     """
     Combined detector + visualizer:
-      - Subscribes: /camera/image_raw, /camera/camera_info
-      - Publishes: /pose_ball (PoseStamped), /camera/image_ball (annotated image)
+      - Subscribes:  /camera/image_raw, /camera/camera_info
+      - Publishes:   /pose_ball (PoseStamped), /camera/image_ball (annotated image)
       - Detects every N frames (default 5) using saturation/value segmentation + circularity gating.
-      - Estimates 3D pose in camera frame via z ~= fx * R / r_px, trying multiple candidate radii.
+      - Estimates 3D pose in camera frame via z ≈ fx * R / r_px, trying multiple candidate radii.
       - Suppresses publishing if detection is low in the image (assume ball is in gripper).
     """
 
@@ -61,6 +61,13 @@ class CircleBallNode(Node):
         # Circularity gating (1.0 = perfect circle)
         self.declare_parameter("min_circularity", 0.65)
 
+        # Extra shape gates to reject cylinders/rectangles:
+        # roundness = area / (pi*r^2) where r is the enclosing circle radius.
+        # circle ~ 1.0, square ~ 0.64.
+        self.declare_parameter("min_roundness", 0.78)
+        # aspect ratio of bounding box: min(w,h)/max(w,h). Circle ~ 1.0, tall pillar << 1.
+        self.declare_parameter("min_bbox_aspect", 0.72)
+
         # Debug image behavior
         self.declare_parameter("publish_debug_image", True)
         self.declare_parameter("debug_every_frame", True)  # if False, only publish on detection frames
@@ -77,7 +84,7 @@ class CircleBallNode(Node):
         self.camera_frame: Optional[str] = None
 
         # Last detection for drawing
-        self._last_circle: Optional[Tuple[float, float, float]] = None  # (u, v, r_px)
+        self._last_circle: Optional[Tuple[float, float, float]] = None  # (u,v,r_px)
         self._prev_xyz: Optional[Tuple[float, float, float]] = None
 
         # Publishers
@@ -111,6 +118,9 @@ class CircleBallNode(Node):
         self.get_logger().info("CircleBallNode started (detector + visualizer).")
 
     def camera_info_cb(self, msg: CameraInfo):
+        # K = [fx, 0, cx,
+        #      0, fy, cy,
+        #      0,  0,  1]
         self.fx = float(msg.k[0])
         self.fy = float(msg.k[4])
         self.cx = float(msg.k[2])
@@ -118,55 +128,69 @@ class CircleBallNode(Node):
         self.camera_frame = msg.header.frame_id if msg.header.frame_id else "camera"
 
     def image_cb(self, msg: Image):
+        # Convert
         try:
             img_bgr = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         except Exception as e:
             self.get_logger().error(f"cv_bridge conversion failed: {e}")
             return
 
-        h, _ = img_bgr.shape[:2]
+        h, w = img_bgr.shape[:2]
         publish_debug = bool(self.get_parameter("publish_debug_image").get_parameter_value().bool_value)
         debug_every_frame = bool(self.get_parameter("debug_every_frame").get_parameter_value().bool_value)
 
-        # Detection cadence
+        # Decide whether to run detection on this frame
         self.frame_count += 1
         n = int(self.get_parameter("process_every_n_frames").get_parameter_value().integer_value)
         do_detect = (n <= 1) or (self.frame_count % n == 0)
 
+        # Default: keep last circle (for drawing), and maybe update it on detection frames
         circle = self._last_circle
 
         if do_detect:
-            circle = self.find_ball_circle(img_bgr)
-            self._last_circle = circle
+            # Need camera_info for 3D pose
+            if self.fx is None or self.fy is None or self.cx is None or self.cy is None:
+                self.get_logger().warn("No /camera/camera_info yet; cannot estimate 3D pose.")
+                # Still can draw segmentation result if you want, but skip pose.
+                circle = self.find_ball_circle(img_bgr)
+                self._last_circle = circle
+            else:
+                circle = self.find_ball_circle(img_bgr)
+                self._last_circle = circle
 
-            # Publish pose only if we can estimate 3D
-            if circle is not None and self.fx is not None:
-                u, v, r_px = circle
+                if circle is not None:
+                    u, v, r_px = circle
 
-                # Size gating
-                min_r = float(self.get_parameter("min_radius_px").get_parameter_value().double_value)
-                max_r = float(self.get_parameter("max_radius_px").get_parameter_value().double_value)
-                if not (min_r <= r_px <= max_r):
-                    self._last_circle = None
-                else:
-                    # Gripper gating
-                    y_ratio = float(self.get_parameter("gripper_y_threshold_ratio").get_parameter_value().double_value)
-                    y_cut = int(y_ratio * h)
-                    gripper_max_r = float(self.get_parameter("gripper_max_radius_px").get_parameter_value().double_value)
+                    # Size gating
+                    min_r = float(self.get_parameter("min_radius_px").get_parameter_value().double_value)
+                    max_r = float(self.get_parameter("max_radius_px").get_parameter_value().double_value)
+                    if not (min_r <= r_px <= max_r):
+                        circle = None
+                        self._last_circle = None
+                    else:
+                        # Gripper gating
+                        y_ratio = float(self.get_parameter("gripper_y_threshold_ratio").get_parameter_value().double_value)
+                        y_cut = int(y_ratio * h)
 
-                    if int(v) < y_cut and r_px < gripper_max_r:
-                        xyz = self.circle_to_pose_multi_radius(u, v, r_px)
-                        if xyz is not None:
-                            xyz = self.apply_ema(xyz)
+                        gripper_max_r = float(self.get_parameter("gripper_max_radius_px").get_parameter_value().double_value)
+                        if int(v) >= y_cut or r_px >= gripper_max_r:
+                            # Detected low / huge => in gripper (or too close): don't publish pose
+                            pass
+                        else:
+                            xyz = self.circle_to_pose_multi_radius(u, v, r_px)
+                            if xyz is not None:
+                                xyz = self.apply_ema(xyz)
 
-                            out = PoseStamped()
-                            out.header.stamp = msg.header.stamp
-                            out.header.frame_id = self.camera_frame if self.camera_frame else msg.header.frame_id
-                            out.pose.position.x = float(xyz[0])
-                            out.pose.position.y = float(xyz[1])
-                            out.pose.position.z = float(xyz[2])
-                            out.pose.orientation.w = 1.0
-                            self.pose_pub.publish(out)
+                                out = PoseStamped()
+                                out.header.stamp = msg.header.stamp
+                                out.header.frame_id = self.camera_frame if self.camera_frame else msg.header.frame_id
+
+                                out.pose.position.x = float(xyz[0])
+                                out.pose.position.y = float(xyz[1])
+                                out.pose.position.z = float(xyz[2])
+                                out.pose.orientation.w = 1.0
+
+                                self.pose_pub.publish(out)
 
         # Publish debug image
         if publish_debug and (debug_every_frame or do_detect):
@@ -178,18 +202,13 @@ class CircleBallNode(Node):
                 cv2.circle(dbg, (int(u), int(v)), 2, (0, 0, 255), 3)
 
                 if bool(self.get_parameter("draw_text").get_parameter_value().bool_value):
+                    # show px radius and (if available) depth estimate from previous pose
                     text = f"r_px={r:.1f}"
                     if self._prev_xyz is not None:
                         text += f" z={self._prev_xyz[2]:.2f}m"
                     cv2.putText(
-                        dbg,
-                        text,
-                        (max(5, int(u) - 40), max(20, int(v) - 10)),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.6,
-                        (0, 0, 255),
-                        2,
-                        cv2.LINE_AA,
+                        dbg, text, (max(5, int(u) - 40), max(20, int(v) - 10)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2, cv2.LINE_AA
                     )
 
             out_img = self.bridge.cv2_to_imgmsg(dbg, encoding="bgr8")
@@ -197,6 +216,18 @@ class CircleBallNode(Node):
             self.debug_pub.publish(out_img)
 
     def find_ball_circle(self, img_bgr: np.ndarray) -> Optional[Tuple[float, float, float]]:
+        """
+        Detect a ball by:
+          1) HSV saturation/value threshold (removes grey background),
+          2) contour extraction,
+          3) strong shape gates: circularity + roundness + bbox aspect ratio.
+
+        Why this fixes your issue:
+        A rectangle (pillar side) can have circularity around ~0.78, so circularity alone
+        is NOT enough. Roundness (area / area_of_enclosing_circle) rejects rectangles:
+        - circle ≈ 1.0
+        - square/rect ≈ 0.5–0.65
+        """
         hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
         _, s, v = cv2.split(hsv)
 
@@ -206,7 +237,7 @@ class CircleBallNode(Node):
         mask = cv2.inRange(s, sat_min, 255) & cv2.inRange(v, val_min, 255)
 
         k = int(self.get_parameter("morph_kernel").get_parameter_value().integer_value)
-        k = max(3, k | 1)
+        k = max(3, k | 1)  # ensure odd >=3
         kernel = np.ones((k, k), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
@@ -216,6 +247,9 @@ class CircleBallNode(Node):
             return None
 
         min_circ = float(self.get_parameter("min_circularity").get_parameter_value().double_value)
+        min_round = float(self.get_parameter("min_roundness").get_parameter_value().double_value)
+        min_aspect = float(self.get_parameter("min_bbox_aspect").get_parameter_value().double_value)
+
         min_r = float(self.get_parameter("min_radius_px").get_parameter_value().double_value)
         max_r = float(self.get_parameter("max_radius_px").get_parameter_value().double_value)
 
@@ -224,36 +258,59 @@ class CircleBallNode(Node):
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            if area < 30.0:
+            if area < 50.0:
                 continue
 
             per = cv2.arcLength(cnt, True)
             if per < 1e-6:
                 continue
 
-            circularity = 4.0 * math.pi * area / (per * per)
-            if circularity < min_circ:
-                continue
-
+            # Enclosing circle for radius + roundness
             (u, v0), r = cv2.minEnclosingCircle(cnt)
             if r < min_r or r > max_r:
                 continue
 
-            score = circularity * r
+            # 1) Circularity (perimeter-based)
+            circularity = 4.0 * math.pi * area / (per * per)
+            if circularity < min_circ:
+                continue
+
+            # 2) Roundness (area vs enclosing circle area)
+            circle_area = math.pi * (r * r)
+            if circle_area <= 1e-6:
+                continue
+            roundness = area / circle_area
+            if roundness < min_round:
+                continue
+
+            # 3) Bounding-box aspect ratio (reject tall pillars/rectangles)
+            x, y, w, h = cv2.boundingRect(cnt)
+            aspect = min(w, h) / max(w, h)
+            if aspect < min_aspect:
+                continue
+
+            # Score: prefer big + very round blobs (likely the ball)
+            score = (circularity * roundness) * r
             if score > best_score:
                 best_score = score
                 best_circle = (float(u), float(v0), float(r))
 
         return best_circle
 
-    def circle_to_pose_multi_radius(
-        self, u: float, v: float, r_px: float
-    ) -> Optional[Tuple[float, float, float]]:
+
+    def circle_to_pose_multi_radius(self, u: float, v: float, r_px: float) -> Optional[Tuple[float, float, float]]:
+        """
+        Estimate 3D position in camera frame using z ≈ fx * R / r_px.
+        Tries multiple candidate radii and chooses the best plausible depth.
+        """
         if r_px <= 1e-6 or self.fx is None or self.fy is None or self.cx is None or self.cy is None:
             return None
 
+        # Read radii list
         radii_param = self.get_parameter("ball_radii_m").get_parameter_value().double_array_value
-        radii: List[float] = list(radii_param) if len(radii_param) else [0.2]
+        radii: List[float] = list(radii_param) if len(radii_param) else []
+        if not radii:
+            radii = [0.2]
 
         min_depth = float(self.get_parameter("min_depth_m").get_parameter_value().double_value)
         max_depth = float(self.get_parameter("max_depth_m").get_parameter_value().double_value)
@@ -268,15 +325,20 @@ class CircleBallNode(Node):
             x = (u - self.cx) * z / self.fx
             y = (v - self.cy) * z / self.fy
 
-            if math.isfinite(x) and math.isfinite(y) and math.isfinite(z) and z > 0.0:
-                candidates.append((x, y, z))
+            if not (math.isfinite(x) and math.isfinite(y) and math.isfinite(z)):
+                continue
+            if z <= 0.0:
+                continue
+
+            candidates.append((x, y, z))
 
         if not candidates:
             return None
 
+        # Choose candidate closest to previous position if available; else pick middle depth
         if self._prev_xyz is not None:
             px, py, pz = self._prev_xyz
-            candidates.sort(key=lambda c: (c[2] - pz) ** 2 + (c[0] - px) ** 2 + (c[1] - py) ** 2)
+            candidates.sort(key=lambda c: (c[2]-pz)**2 + (c[0]-px)**2 + (c[1]-py)**2)
             return candidates[0]
 
         candidates.sort(key=lambda c: c[2])
@@ -292,11 +354,9 @@ class CircleBallNode(Node):
 
         px, py, pz = self._prev_xyz
         x, y, z = xyz
-        smoothed = (
-            px * alpha + x * (1.0 - alpha),
-            py * alpha + y * (1.0 - alpha),
-            pz * alpha + z * (1.0 - alpha),
-        )
+        smoothed = (px * alpha + x * (1.0 - alpha),
+                    py * alpha + y * (1.0 - alpha),
+                    pz * alpha + z * (1.0 - alpha))
         self._prev_xyz = smoothed
         return smoothed
 

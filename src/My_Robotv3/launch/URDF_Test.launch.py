@@ -1,0 +1,83 @@
+import os
+from os.path import join
+
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node
+import xacro
+
+
+def generate_launch_description():
+    pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
+    pkg_robot = get_package_share_directory('my_robot_v3_description')
+
+    robot_description_file = os.path.join(pkg_robot, 'urdf', 'My_Robot_Cam_UDRF.xacro')
+    ros_gz_bridge_config = os.path.join(pkg_robot, 'config', 'ros_gz_bridge_gazebo.yaml')
+    rviz_config_file = os.path.join(pkg_robot, 'config', 'display.rviz')
+
+    robot_description_config = xacro.process_file(robot_description_file)
+    robot_description = {'robot_description': robot_description_config.toxml()}
+
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[robot_description],
+    )
+
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
+        launch_arguments={'gz_args': '-r -v 4 empty.sdf'}.items(),
+    )
+
+    spawn_robot = TimerAction(
+        period=5.0,
+        actions=[Node(
+            package='ros_gz_sim',
+            executable='create',
+            arguments=[
+                '-topic', '/robot_description',
+                '-name', 'my_robot_v3',
+                '-allow_renaming', 'false',
+                '-x', '-3.0',
+                '-y', '3.0',
+                '-z', '1.0',
+                '-Y', '0.0',
+            ],
+            output='screen',
+        )],
+    )
+
+    ros_gz_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[{'config_file': ros_gz_bridge_config}],
+        output='screen',
+    )
+
+    arm_control = Node(
+        package='my_robot_v3_description',
+        executable='arm_control',
+        name='arm_control',
+        output='screen',
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_file],
+        output='screen',
+    )
+
+    return LaunchDescription([
+        gazebo,
+        spawn_robot,
+        ros_gz_bridge,
+        robot_state_publisher,
+        arm_control,
+        rviz_node,
+    ])

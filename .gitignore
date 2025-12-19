@@ -2,4 +2,6 @@ build/
 install/
 log/
 .cache_*
-docs/
+.docs
+.back
+.vscode
