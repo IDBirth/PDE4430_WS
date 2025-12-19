@@ -87,16 +87,17 @@ def generate_launch_description():
     # }.items(),
     # )
 
-    # # 6) Teleoperation node (optional to include here; otherwise run manually)
-    # teleop_node = Node(
-    #     package='teleop_twist_keyboard',
-    #     executable='teleop_twist_keyboard',
-    #     name='teleop',
-    #     output='screen',
-    #     emulate_tty=True,
-    #     prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
-    # )
+    # 6) Teleoperation node (optional to include here; otherwise run manually)
+    teleop_node = Node(
+        package='teleop_twist_keyboard',
+        executable='teleop_twist_keyboard',
+        name='teleop',
+        output='screen',
+        emulate_tty=True,
+        prefix=['xterm -e ']  # opens in its own terminal; remove if you prefer same terminal
+    )
 
+    
     return LaunchDescription([
         assessment_complete,   # world + spheres
         robot_state_publisher, # robot_description + TF
@@ -104,5 +105,5 @@ def generate_launch_description():
         ros_gz_bridge,         # sensor/velocity bridge
         arm_control,           # arm open/close services
         # slam_launch,             # mapping
-        # teleop_node,           # keyboard control
+        teleop_node,           # keyboard control
     ])

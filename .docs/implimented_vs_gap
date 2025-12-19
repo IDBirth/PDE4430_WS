@@ -1,0 +1,26 @@
+PDE4430 Coursework — Workspace-Based Evaluation
+
+Scope
+- Evidence source: /home/ubu/PDE4430_WS (code + README) and docs/CW_Worksheet.pdf, docs/DBI_PDE4430_CW.pdf
+- Rubric: 4 criteria x 25 (Approach, Implementation, Performance, Documentation)
+
+Scores (out of 25)
+
+1) Approach: 17/25
+- Evidence: Solid ROS 2 workspace structure, assessment world integration, robot description package, SLAM hooks.
+- Gaps: Limited explicit autonomous strategy for ball detection/manipulation; arms/camera dont have functions and pipeline not integrated.
+
+2) Implementation: 16/25
+- Evidence: URDF/Xacro with meshes, Gazebo plugins, ROS <-> Gazebo bridge, launch files, SLAM integration.
+- Gaps: ros2_control not implemented; arm control partially via custom node but no controller stack; some TODOs/placeholder metadata.
+
+3) Performance: 10/25
+- Evidence: Robot can be spawned, teleoperated, lidar available, SLAM launch provided.
+- Gaps: No demonstrated navigation/ball collection pipeline, no performance metrics, manipulation not verified in sim.
+
+4) Documentation: 18/25
+- Evidence: Workspace README with build/run, package README, assessment world README, references to coursework docs.
+- Gaps: Limited architecture/flow diagrams, no evaluation results, no explicit RQT graph or testing evidence.
+
+Total: 61/100
+

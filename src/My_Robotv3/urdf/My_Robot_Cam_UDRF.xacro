@@ -61,7 +61,7 @@
 
   <link name="${prefix}base_link">
     <inertial>
-      <origin xyz="-0.07327696957668513 0.18599999999999897 0.03780217439911652" rpy="0 0 0"/>
+      <origin xyz="-0.09727696957668519 -1.0302869668521452e-15 0.4078021743991166" rpy="0 0 0"/>
       <mass value="234.7770329034331"/>
       <inertia ixx="30.45054" iyy="20.65215" izz="32.896368" ixy="-0.0" iyz="-0.0" ixz="-0.345272"/>
     </inertial>
@@ -74,14 +74,14 @@
   <!-- Sensors (visual geometry only; Gazebo sensors/plugins can be added in My_Robot_Cam_UDRF.gazebo) -->
   <link name="${prefix}camera_1">
     <inertial>
-      <origin xyz="0 0 -0.017" rpy="0 0 0"/>
+      <origin xyz="5.551115123125783e-17 0.0 -0.017000000000000126" rpy="0 0 0"/>
       <mass value="1.191651999466405"/>
       <inertia ixx="0.000907" iyy="0.000363" izz="0.00104" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/camera_1.stl"
-      xyz="-0.36 -0.186 -0.344" rpy="0 0 0" material_name="silver"/>
+      xyz="-0.336 0.0 -0.714" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Standard ROS camera optical frame (handy for image pipelines) -->
@@ -95,14 +95,14 @@
 
   <link name="${prefix}lidar_1">
     <inertial>
-      <origin xyz="0.02 0 -0.007" rpy="0 0 0"/>
+      <origin xyz="0.04399999999999997 0.18599999999999997 -0.3770000000000002" rpy="0 0 0"/>
       <mass value="2.1007654145366375"/>
-      <inertia ixx="0.001356" iyy="0.001356" izz="0.002034" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="0.001356" iyy="0.001356" izz="0.002034" ixy="0.0" iyz="-0.0" ixz="0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/lidar_1.stl"
-      xyz="-0.002 -0.186 -0.384" rpy="0 0 0" material_name="silver"/>
+      xyz="0.046 0.186 -1.124" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}laser_frame">
@@ -116,78 +116,69 @@
   <!-- Wheels -->
   <link name="${prefix}left_wheel_1">
     <inertial>
-      <origin xyz="0 0.023 -0.03" rpy="0 0 0"/>
+      <origin xyz="0.02400000000000009 0.20900000000000019 -0.4000000000000001" rpy="0 0 0"/>
       <mass value="1.555503053757221"/>
       <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/left_wheel_1.stl"
-      xyz="-0.024 -0.5732 0.232" rpy="0 0 0" material_name="silver"/>
+      xyz="0.024 -0.2012 -0.508" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}right_wheel_1">
     <inertial>
-      <origin xyz="0 -0.023 -0.03" rpy="0 0 0"/>
+      <origin xyz="0.023999999999999917 0.1630000000000001 -0.4" rpy="0 0 0"/>
       <mass value="1.5555030537572214"/>
       <inertia ixx="0.004956" iyy="0.009411" izz="0.004956" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/right_wheel_1.stl"
-      xyz="-0.024 0.2012 0.232" rpy="0 0 0" material_name="silver"/>
+      xyz="0.024 0.5732 -0.508" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Caster wheel (mesh-based, template aligned with back files) -->
   <link name="${prefix}caster_wheel_1">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.1"/>
-      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      <origin xyz="0.013999999999999957 0.18633913892803772 -0.42461804516587487" rpy="0 0 0"/>
+      <mass value="4.669751850982787"/>
+      <inertia ixx="0.005221" iyy="0.005251" izz="0.008081" ixy="0.0" iyz="-0.0" ixz="0.0"/>
     </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="file://${mesh_dir}/caster_wheel_1.stl" scale="${mesh_scale}"/>
-      </geometry>
-      <material name="silver"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="file://${mesh_dir}/caster_wheel_1.stl" scale="${mesh_scale}"/>
-      </geometry>
-    </collision>
+
+    <xacro:mesh_visual_collision
+      mesh_path="file://${mesh_dir}/caster_wheel_1.stl"
+      xyz="0.365 0.186227 -0.464" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Arms -->
   <link name="${prefix}left_arm_1">
     <inertial>
-      <origin xyz="0.1917093322749274 -0.002691315286684093 -0.02" rpy="0 0 0"/>
+      <origin xyz="0.19170933227492737 -0.002691315286684093 -0.020000000000000157" rpy="0 0 0"/>
       <mass value="2.420566632833367"/>
       <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="0.000981" iyz="-0.0" ixz="0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/left_arm_1.stl"
-      xyz="0.033381 -0.517012 0.2155" rpy="0 0 0" material_name="silver"/>
+      xyz="0.057381 -0.331012 -0.1545" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}right_arm_1">
     <inertial>
-      <origin xyz="0.1917093322749274 0.002692315286683955 -0.02" rpy="0 0 0"/>
+      <origin xyz="0.19170933227492737 0.0026923152866838995 -0.0200000000000001" rpy="0 0 0"/>
       <mass value="2.420566632833367"/>
-      <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="-0.000981" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.000455" iyy="0.031668" izz="0.031478" ixy="-0.000981" iyz="-0.0" ixz="-0.0"/>
     </inertial>
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/right_arm_1.stl"
-      xyz="0.033381 0.145013 0.2155" rpy="0 0 0" material_name="silver"/>
+      xyz="0.057381 0.331013 -0.1545" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Joints -->
   <joint name="${prefix}camera_joint" type="fixed">
-    <origin xyz="0.36 0.186 0.344" rpy="0 -0.34906585 0"/>
+    <origin xyz="0.336 0.0 0.714" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}camera_1"/>
   </joint>
@@ -200,7 +191,7 @@
   </joint>
 
   <joint name="${prefix}lidar_joint" type="fixed">
-    <origin xyz="0.002 0.186 0.384" rpy="0 0 0"/>
+    <origin xyz="-0.046 -0.186 1.124" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}lidar_1"/>
   </joint>
@@ -212,7 +203,7 @@
   </joint>
 
   <joint name="${prefix}left_wheel" type="continuous">
-    <origin xyz="0.024 0.5732 -0.232" rpy="0 0 0"/>
+    <origin xyz="-0.024 0.2012 0.508" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}left_wheel_1"/>
     <axis xyz="0 1 0"/>
@@ -221,34 +212,34 @@
   </joint>
 
   <joint name="${prefix}right_wheel" type="continuous">
-    <origin xyz="0.024 -0.2012 -0.232" rpy="0 0 0"/>
+    <origin xyz="-0.024 -0.5732 0.508" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}right_wheel_1"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="-0.0 -1.0 0.0"/>
     <limit effort="5.0" velocity="30.0"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
   <joint name="${prefix}caster_wheel_joint" type="fixed">
-    <origin xyz="-0.8 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.365 -0.186227 0.464" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}caster_wheel_1"/>
   </joint>
 
   <joint name="${prefix}left_arm" type="continuous">
-    <origin xyz="-0.033381 0.517012 -0.2155" rpy="0 0 0"/>
+    <origin xyz="-0.057381 0.331012 0.1545" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}left_arm_1"/>
-    <axis xyz="0 0 -1"/>
+    <axis xyz="-0.0 0.0 -1.0"/>
     <limit effort="2.0" velocity="2.0"/>
     <dynamics damping="0.2" friction="0.1"/>
   </joint>
 
   <joint name="${prefix}right_arm" type="continuous">
-    <origin xyz="-0.033381 -0.145013 -0.2155" rpy="0 0 0"/>
+    <origin xyz="-0.057381 -0.331013 0.1545" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}right_arm_1"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0.0 0.0 1.0"/>
     <limit effort="2.0" velocity="2.0"/>
     <dynamics damping="0.2" friction="0.1"/>
   </joint>

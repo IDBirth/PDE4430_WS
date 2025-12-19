@@ -1,0 +1,43 @@
+PDE4430 Coursework Video Script (5 minutes)
+
+[0:00 – 0:20] Title + Context
+- "Hi, I’m Bilal Baslar, MSc Robotics. This is my PDE4430 coursework workspace in ROS 2 Jazzy and Gazebo Harmonic."
+- "Goal: design a mobile robot that can move spheres into the pen area in the assessment world."
+
+[0:20 – 0:50] Repository Overview
+- "This is the workspace: PDE4430_WS." 
+- "Two main packages in src/: my_robot_description and assessment_world." 
+- "Docs folder contains the coursework brief and worksheet." 
+
+[0:50 – 1:30] Assessment World (assessment_world)
+- "This package provides the 8x8m arena, obstacles, and random sphere spawning." 
+- "Launch options: assessment_world.launch.py for the world only; assessment_complete.launch.py for world + sphere spawner." 
+- "I use this world to test robot spawning, sensing, and mapping." 
+
+[1:30 – 2:20] Robot Description (my_robot_description)
+- "This package contains the robot model: URDF/Xacro, meshes, and Gazebo plugins." 
+- "Key components: differential drive base, lidar sensor, and a bridge to ROS topics." 
+- "I kept the model modular: URDF + Xacro with materials, Gazebo config, and launch files." 
+
+[2:20 – 3:10] Launch + Runtime Flow
+- "Main launch: ros2 launch my_robot_description start.launch.py" 
+- "This launches the assessment world, spawns the robot, starts ros_gz_bridge, then SLAM Toolbox and RViz." 
+- "Important topics: /cmd_vel, /odom, /scan, /tf, /joint_states, /clock." 
+- "This creates a full simulation loop for teleoperation and mapping." 
+
+[3:10 – 4:00] Demonstration Segment
+- "Here I show the robot spawning in Gazebo, visible in the assessment arena." 
+- "RViz is open with the TF tree and lidar scan." 
+- "I teleoperate to confirm motion and sensor data, then start SLAM mapping." 
+- "The map updates as the robot moves, validating the pipeline." 
+
+[4:00 – 4:40] Evaluation vs Coursework Criteria
+- "Approach: structured workspace and clear separation of world vs robot packages." 
+- "Implementation: full URDF model, Gazebo plugins, bridge, and SLAM integration." 
+- "Performance: robot motion and sensing verified; manipulation pipeline remains future work." 
+- "Documentation: README covers build and run instructions with package-level notes." 
+
+[4:40 – 5:00] Next Steps + Close
+- "Next steps: add autonomous perception of spheres, integrate ros2_control for arms, and Nav2 for navigation." 
+- "This would complete a full autonomous ball collection pipeline." 
+- "Thank you for watching."
