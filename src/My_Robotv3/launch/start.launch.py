@@ -26,6 +26,7 @@ def generate_launch_description():
     robot_xacro = os.path.join(pkg_my_robot, 'urdf', 'My_Robot_Cam_UDRF.xacro')
     ros_gz_bridge_config = os.path.join(pkg_my_robot, 'config', 'ros_gz_bridge_gazebo.yaml')
     slam_params = os.path.join(pkg_my_robot, 'config', 'mapper_params_online_async.yaml')
+    rviz_config_file = os.path.join(pkg_my_robot, 'config', 'display.rviz')
 
     robot_description_config = xacro.process_file(robot_xacro)
     robot_description = {'robot_description': robot_description_config.toxml()}
@@ -69,6 +70,15 @@ def generate_launch_description():
         package='my_robot_v3_description',
         executable='arm_control',
         name='arm_control',
+        output='screen'
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_file],
+        parameters=[{'use_sim_time': True}],
         output='screen'
     )
 
@@ -120,4 +130,5 @@ def generate_launch_description():
         ball_perception,       # ball detection + goal transform
         # slam_launch,             # mapping
         teleop_node,           # keyboard control
+        rviz_node,             # visualization
     ])
