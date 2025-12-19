@@ -47,9 +47,11 @@ The `assessment_world` package provides an 8m x 8m arena with obstacles and rand
 
 ---
 
-## Coursework Plan (Source Documentation)
+## Coursework Submision
 
-Link: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+Blog Link: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+Github: 'https://github.com/IDBirth/PDE4430_WS/tree/testing?tab=readme-ov-file#compliance-gazebo-ground-truth '
+Youtube: "https://youtu.be/FiY-CyodFZo"
 
 This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar (M01099599).
 
