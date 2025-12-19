@@ -1,17 +1,6 @@
 <?xml version="1.0"?>
 <robot name="my_robot_v3" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!--
-    Cleaned / ROS2-friendly Xacro.
-
-    Notes:
-    - Link meshes appear to be exported in *assembly coordinates* (common from CAD exports).
-      That’s why many links have a non-zero <visual>/<collision> origin that is "cancelled" by
-      the joint origin.
-    - Default names are preserved (base_link, camera_1, lidar_1, ...) so existing RViz configs
-      and launch files keep working.
-  -->
-
   <!-- Optional prefix for multi-robot use -->
   <xacro:arg name="prefix" default=""/>
   <xacro:property name="prefix" value="$(arg prefix)"/>
@@ -25,6 +14,48 @@
   <xacro:include filename="$(find my_robot_v3_description)/urdf/materials.xacro"/>
   <xacro:include filename="$(find my_robot_v3_description)/urdf/My_Robot_Cam_UDRF.ros2control"/>
   <xacro:include filename="$(find my_robot_v3_description)/urdf/My_Robot_Cam_UDRF.gazebo"/>
+
+  <!--
+    ==========================================================
+    POSES (EDIT ONLY HERE)
+    These are the link-frame poses relative to base_link.
+    Visual/collision will automatically use the NEGATIVE values
+    to keep your assembly-exported STLs aligned.
+    ==========================================================
+  -->
+
+  <!-- camera_1 -->
+  <xacro:property name="cam_x" value="0.336"/>
+  <xacro:property name="cam_y" value="0.0"/>
+  <xacro:property name="cam_z" value="0.714"/>
+
+  <!-- lidar_1 -->
+  <xacro:property name="lidar_x" value="-0.046"/>
+  <xacro:property name="lidar_y" value="-0.186"/>
+  <xacro:property name="lidar_z" value="1.124"/>
+
+  <!-- wheels -->
+  <xacro:property name="lw_x" value="-0.024"/>
+  <xacro:property name="lw_y" value="0.2012"/>
+  <xacro:property name="lw_z" value="0.508"/>
+
+  <xacro:property name="rw_x" value="-0.024"/>
+  <xacro:property name="rw_y" value="-0.5732"/>
+  <xacro:property name="rw_z" value="0.508"/>
+
+  <!-- caster -->
+  <xacro:property name="caster_x" value="-0.365"/>
+  <xacro:property name="caster_y" value="-0.186227"/>
+  <xacro:property name="caster_z" value="0.464"/>
+
+  <!-- arms -->
+  <xacro:property name="la_x" value="-0.057381"/>
+  <xacro:property name="la_y" value="0.331012"/>
+  <xacro:property name="la_z" value="0.1545"/>
+
+  <xacro:property name="ra_x" value="-0.057381"/>
+  <xacro:property name="ra_y" value="-0.331013"/>
+  <xacro:property name="ra_z" value="0.1545"/>
 
   <!-- Small helper macro to reduce repetition -->
   <xacro:macro name="mesh_visual_collision" params="mesh_path xyz rpy material_name">
@@ -44,7 +75,6 @@
   </xacro:macro>
 
   <!-- Base -->
-  <!-- base_footprint is commonly expected by Nav2; keep it aligned with base_link for now -->
   <link name="${prefix}base_footprint">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -71,7 +101,7 @@
       xyz="0 0 0" rpy="0 0 0" material_name="silver"/>
   </link>
 
-  <!-- Sensors (visual geometry only; Gazebo sensors/plugins can be added in My_Robot_Cam_UDRF.gazebo) -->
+  <!-- Sensors -->
   <link name="${prefix}camera_1">
     <inertial>
       <origin xyz="5.551115123125783e-17 0.0 -0.017000000000000126" rpy="0 0 0"/>
@@ -79,12 +109,12 @@
       <inertia ixx="0.000907" iyy="0.000363" izz="0.00104" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
 
+    <!-- NEGATED pose to match assembly-exported STL -->
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/camera_1.stl"
-      xyz="-0.336 0.0 -0.714" rpy="0 0 0" material_name="silver"/>
+      xyz="${-cam_x} ${-cam_y} ${-cam_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
-  <!-- Standard ROS camera optical frame (handy for image pipelines) -->
   <link name="${prefix}camera_optical_frame">
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -102,7 +132,7 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/lidar_1.stl"
-      xyz="0.046 0.186 -1.124" rpy="0 0 0" material_name="silver"/>
+      xyz="${-lidar_x} ${-lidar_y} ${-lidar_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}laser_frame">
@@ -123,7 +153,7 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/left_wheel_1.stl"
-      xyz="0.024 -0.2012 -0.508" rpy="0 0 0" material_name="silver"/>
+      xyz="${-lw_x} ${-lw_y} ${-lw_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}right_wheel_1">
@@ -135,10 +165,10 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/right_wheel_1.stl"
-      xyz="0.024 0.5732 -0.508" rpy="0 0 0" material_name="silver"/>
+      xyz="${-rw_x} ${-rw_y} ${-rw_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
-  <!-- Caster wheel (mesh-based, template aligned with back files) -->
+  <!-- Caster -->
   <link name="${prefix}caster_wheel_1">
     <inertial>
       <origin xyz="0.013999999999999957 0.18633913892803772 -0.42461804516587487" rpy="0 0 0"/>
@@ -148,7 +178,7 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/caster_wheel_1.stl"
-      xyz="0.365 0.186227 -0.464" rpy="0 0 0" material_name="silver"/>
+      xyz="${-caster_x} ${-caster_y} ${-caster_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Arms -->
@@ -161,7 +191,7 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/left_arm_1.stl"
-      xyz="0.057381 -0.331012 -0.1545" rpy="0 0 0" material_name="silver"/>
+      xyz="${-la_x} ${-la_y} ${-la_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <link name="${prefix}right_arm_1">
@@ -173,12 +203,12 @@
 
     <xacro:mesh_visual_collision
       mesh_path="file://${mesh_dir}/right_arm_1.stl"
-      xyz="0.057381 0.331013 -0.1545" rpy="0 0 0" material_name="silver"/>
+      xyz="${-ra_x} ${-ra_y} ${-ra_z}" rpy="0 0 0" material_name="silver"/>
   </link>
 
   <!-- Joints -->
   <joint name="${prefix}camera_joint" type="fixed">
-    <origin xyz="0.336 0.0 0.714" rpy="0 0 0"/>
+    <origin xyz="${cam_x} ${cam_y} ${cam_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}camera_1"/>
   </joint>
@@ -191,7 +221,7 @@
   </joint>
 
   <joint name="${prefix}lidar_joint" type="fixed">
-    <origin xyz="-0.046 -0.186 1.124" rpy="0 0 0"/>
+    <origin xyz="${lidar_x} ${lidar_y} ${lidar_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}lidar_1"/>
   </joint>
@@ -203,7 +233,7 @@
   </joint>
 
   <joint name="${prefix}left_wheel" type="continuous">
-    <origin xyz="-0.024 0.2012 0.508" rpy="0 0 0"/>
+    <origin xyz="${lw_x} ${lw_y} ${lw_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}left_wheel_1"/>
     <axis xyz="0 1 0"/>
@@ -212,34 +242,34 @@
   </joint>
 
   <joint name="${prefix}right_wheel" type="continuous">
-    <origin xyz="-0.024 -0.5732 0.508" rpy="0 0 0"/>
+    <origin xyz="${rw_x} ${rw_y} ${rw_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}right_wheel_1"/>
-    <axis xyz="-0.0 -1.0 0.0"/>
+    <axis xyz="0 -1 0"/>
     <limit effort="5.0" velocity="30.0"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
 
   <joint name="${prefix}caster_wheel_joint" type="fixed">
-    <origin xyz="-0.365 -0.186227 0.464" rpy="0 0 0"/>
+    <origin xyz="${caster_x} ${caster_y} ${caster_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}caster_wheel_1"/>
   </joint>
 
   <joint name="${prefix}left_arm" type="continuous">
-    <origin xyz="-0.057381 0.331012 0.1545" rpy="0 0 0"/>
+    <origin xyz="${la_x} ${la_y} ${la_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}left_arm_1"/>
-    <axis xyz="-0.0 0.0 -1.0"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="2.0" velocity="2.0"/>
     <dynamics damping="0.2" friction="0.1"/>
   </joint>
 
   <joint name="${prefix}right_arm" type="continuous">
-    <origin xyz="-0.057381 -0.331013 0.1545" rpy="0 0 0"/>
+    <origin xyz="${ra_x} ${ra_y} ${ra_z}" rpy="0 0 0"/>
     <parent link="${prefix}base_link"/>
     <child link="${prefix}right_arm_1"/>
-    <axis xyz="0.0 0.0 1.0"/>
+    <axis xyz="0 0 1"/>
     <limit effort="2.0" velocity="2.0"/>
     <dynamics damping="0.2" friction="0.1"/>
   </joint>

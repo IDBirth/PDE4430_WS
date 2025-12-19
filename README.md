@@ -184,6 +184,7 @@ PDE4430_WS/
     My_Robot/                   # my_robot_description (baseline robot)
     My_Robotv2/                 # v2 robot description package
     My_Robotv3/                 # v3 robot description package
+    my_bot_perception/          # ball detection + goal transform nodes
     nav2_stack/                 # Nav2 bringup wrapper
     ros2_assessment_world-main/ # assessment_world (Gazebo environment)
 ```
@@ -199,6 +200,7 @@ PDE4430_WS/
 - `ros_gz` packages (`ros_gz_sim`, `ros_gz_bridge`, `ros_gz_interfaces`)
 - `xacro`
 - `slam_toolbox`
+- `cv_bridge` + OpenCV (for `my_bot_perception`)
 
 ### Build
 
@@ -224,6 +226,30 @@ ros2 launch assessment_world assessment_complete.launch.py
 
 ```bash
 ros2 launch my_robot_description start.launch.py
+```
+
+### My_Robotv3 (Gazebo + spawn + bridge + arm control)
+
+```bash
+ros2 launch my_robot_v3_description gazebo.launch.py
+```
+
+### My_Robotv3 (Gazebo + RViz combined)
+
+```bash
+ros2 launch my_robot_v3_description URDF_Test.launch.py
+```
+
+### My_Robotv3 Full Start (Assessment world + robot + bridge + teleop + perception)
+
+```bash
+ros2 launch my_robot_v3_description start.launch.py
+```
+
+### Ball Perception (standalone)
+
+```bash
+ros2 launch my_bot_perception ball_perception_with_goal.launch.py
 ```
 
 ---
@@ -255,12 +281,25 @@ Second iteration of the robot description (camera + arms + updated meshes).
 Third iteration integrating v1 control/bridge with v2 body/arms/camera and updated launch files.
 Includes custom arm control services and Gazebo tuning.
 
+Key launch files:
+- `start.launch.py` (assessment world + spawn + bridge + teleop + perception with 5s delay)
+- `gazebo.launch.py` (Gazebo + spawn + bridge + arm control)
+- `URDF_Test.launch.py` (Gazebo + RViz combined)
+
 ### 4) `assessment_world`
 **Location:** `src/ros2_assessment_world-main`
 
 Gazebo Harmonic assessment arena with obstacles and sphere spawner.
 
-### 5) `nav2_stack`
+### 5) `my_bot_perception`
+**Location:** `src/my_bot_perception`
+
+Ball perception package with:
+- `circle_ball_node` (combined detector + visualizer)
+- `ball_goal_transformer` (TF2 pose transform + standoff goal)
+- `ball_perception_with_goal.launch.py`
+
+### 6) `nav2_stack`
 **Location:** `src/nav2_stack`
 
 Lightweight Nav2 bringup wrapper and RViz configuration.
@@ -277,6 +316,13 @@ Typical bridged topics:
 
 Common frames:
 - `base_link`, `lidar_1`, `odom`, `map`
+
+Perception topics:
+- `/camera/image_raw`
+- `/camera/camera_info`
+- `/pose_ball`
+- `/camera/image_ball`
+- `/goal_pose`
 
 ---
 
@@ -302,7 +348,7 @@ Add figures into `docs/figures/` and update the links below.
 
 ## Limitations & Next Steps
 
-- Autonomy for ball detection and collection is not yet integrated.
+- Ball detection and goal generation are available, but closed-loop navigation/pickup behavior is not fully integrated.
 - ros2_control controllers for arms are not implemented.
 - Add evaluation artifacts (maps, screenshots, RQT graph, video link) to strengthen documentation.
 
