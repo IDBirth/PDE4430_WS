@@ -1,21 +1,20 @@
-# PDE4431 Coursework 1 — Autonomous Ball Collection Robot (ROS 2 + Gazebo)
+# PDE4430 Coursework — Mobile Robot for Ball Collection (ROS 2 Jazzy + Gazebo Harmonic)
 
 **Programme:** MSc Robotics (Middlesex University Dubai)  
-**Module:** PDE4431  
-**Candidate:** Bilal Baslar (**M01099599**)  
-**Workspace:** `PDE4430_WS`  
+**Module:** PDE4430  
+**Candidate:** Bilal Baslar (M01099599)  
+**Workspace:** `PDE4430_WS`
 
 ---
 
 ## Abstract
 
-This repository contains a ROS 2 workspace targeting the PDE4431 coursework objective:
-design and integrate a mobile robot (URDF) that can navigate an assessment world, locate
-and collect spherical objects, and deliver them to a known goal location. The work is
-structured around URDF modelling, teleoperation, SLAM-based mapping/localisation, Nav2
-navigation, ball detection, and pick-and-place integration.
+This repository contains a ROS 2 workspace for the PDE4430 mobile robotics coursework. The project delivers a
+Gazebo Harmonic assessment world and multiple iterations of a differential-drive robot model (URDF/Xacro + meshes)
+with SLAM-ready launch files. The workspace is structured for reproducibility and extensions toward perception and
+manipulation for ball collection.
 
-**Keywords:** ROS 2, Gazebo Harmonic, URDF, SLAM Toolbox, Nav2, autonomous navigation, perception, manipulation
+**Keywords:** ROS 2 Jazzy, Gazebo Harmonic, URDF/Xacro, ros_gz, SLAM Toolbox, teleoperation
 
 ---
 
@@ -24,7 +23,9 @@ navigation, ball detection, and pick-and-place integration.
 - [Project Overview](#project-overview)
 - [Repository Structure](#repository-structure)
 - [Build & Run (Reproducibility)](#build--run-reproducibility)
-- [Coursework Plan (Source Documentation)](#coursework-plan-source-documentation)
+- [Packages](#packages)
+- [Topics and Frames](#topics-and-frames)
+- [Compliance (Gazebo Ground Truth)](#compliance-gazebo-ground-truth)
 - [Figures (Placeholders)](#figures-placeholders)
 - [Limitations & Next Steps](#limitations--next-steps)
 - [References](#references)
@@ -35,35 +36,157 @@ navigation, ball detection, and pick-and-place integration.
 
 ### Assessment Objective
 
-Create a robot (URDF) that:
-1. Navigates autonomously in a simulated world,
-2. Picks up balls (spheres) from the environment, and
-3. Delivers them to a known goal area (e.g., a pen).
+Create a robot that:
+1. Navigates in the assessment world,
+2. Collects spheres, and
+3. Delivers them to the pen area.
 
 ### Simulation Environment
 
-This workspace includes an assessment world package providing an enclosed arena with obstacles and randomly spawned spheres.
+The `assessment_world` package provides an 8m x 8m arena with obstacles and randomly spawned spheres.
+
+---
+
+## Coursework Plan (Source Documentation)
+
+Link: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+
+This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar (M01099599).
+
+### Problem Breakdown
+
+**Overview:** Create a robot (URDF) that navigates autonomously, picks up balls from the world, and delivers them to the known goal.
+
+**Problem Identification & Solving**
+- URDF problem:
+  - Making body and gripping system
+  - `base_link`
+  - Joint limitations for `left_arm` and `right_arm`
+  - Camera setup
+  - Caster wheel setup
+  - Diff-drive setup
+  - Lidar setup
+  - Create camera publisher
+- Teleoperate problem:
+  - Use the pre-built teleop to publish to `/cmd_vel`
+- SLAM problem:
+  - Create a map of the provided course map (store it in the `map/` folder)
+  - Use `async_slam_toolbox_node` to create a map
+  - Use `localization_slam_toolbox_node` to localise if required
+  - Save the map and config for RViz
+- Nav2 problem:
+  - Navigate to the goal position
+  - Go to a ball pose while avoiding collisions
+  - Hardcode drop point in the map
+- Ball detection problem + ball pose:
+  - Create a subscriber to `steam_node`
+  - Run x frames/s through an OpenCV or YOLO model
+    - https://www.youtube.com/watch?v=5yx5zpu6nk8
+  - Compute position data
+  - Output pose of the ball relative to the camera
+- Autonomous pick and place problem:
+  - Detect ball in zone
+  - Call `Close_Grip` service
+  - Articulate gripper to close and open
+  - Call `Open_Grip` service
+- Launch structure problem:
+  - Launch world (wait 5 sec)
+  - Launch robot
+  - Launch ball
+  - Launch detection nodes
+  - Launch RViz with config
+  - Launch GUI with 3 buttons: Start, Reset, Pause Robot
+- Documentation problem:
+  - Save all here: https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html
+
+### Plan Approach
+
+**URDF Plan**
+- Use Fusion with the Fusion2URDF script to create a base URDF file
+- Use the install script and edit the Xacro
+- Edit the URDF to add lidar, diff-drive, camera, arms (`left_arm` and `right_arm`), and caster wheel
+- Construct the TF tree correctly
+- Ensure wheel separation is correct
+
+**Iteration**
+- URDF_1: https://a360.co/49gF3uo
+- URDF_2: https://a360.co/4s2ivoM
+
+**Issues Faced**
+- Biggest ball is too big
+
+**Between V1 and V2 Changes**
+- Added camera
+- Added arms to hold balls; arms move 30 degrees to close and work for all ball sizes
+- Added caster wheel
+
+**Important Details**
+- Wheel spacing: 776.4 mm (0.776 m)
+- Arms closed at 30 degrees with the biggest ball
+- Arms closed at 45 degrees with the smallest ball
+
+**TF Tree for My_Robot**
+- `base_link`:
+  - `lidar`
+  - `camera`
+  - `right_wheel`
+  - `left_wheel`
+  - `right_arm`
+  - `left_arm`
+  - `caster`
+
+**Diff-drive setup**
+- https://github.com/ros-controls/ros2_controllers/tree/master/diff_drive_controller
+
+**Lidar setup**
+- Needs to be like the previous
+
+**Camera**
+- https://youtu.be/jgXeIXrckBc
+- https://www.youtube.com/watch?v=5yx5zpu6nk8
+- https://chatgpt.com/share/694367a3-eb60-800d-a04e-d29e33882437
+
+**Caster wheel**
+- Decreased the friction to 0.1:
+  - `<mu1>0.1</mu1>`
+  - `<mu2>0.1</mu2>`
+
+**Major issue after 1st test on My_Robotv3**
+- Base link is off
+- Arms move while driving, almost every link is off
+- Wheels aren't able to spin freely
+- Success: camera works and publishes to `/image_raw/image`
+
+**Teleop Plan**
+- Use the built-in teleop node
+
+**SLAM**
+- Map of the provided course map
+- Use `async_slam_toolbox_node` to create a map
+- Use `localization_slam_toolbox_node` to localise if required
+- Save the map and config for RViz
+
+**Showcase moving using Teleop**
+- \"Acceptable Level\" submission: https://youtu.be/g7YHDBDMrE0
 
 ---
 
 ## Repository Structure
 
-This repository is organised as a ROS 2 workspace (typical `colcon` layout):
-
 ```text
 PDE4430_WS/
+  back/                         # Reference templates and earlier URDF variants
   build/
   install/
   log/
+  docs/                         # Coursework brief, worksheet, and artifacts
   src/
-    nav2_stack/                   # Nav2 bringup + RViz config + maps/params
-    ros2_assessment_world-main/   # Gazebo world + sphere spawner (package: assessment_world)
-    My_Robot/                     # (reserved) robot description/manipulation work
+    My_Robot/                   # my_robot_description (baseline robot)
+    My_Robotv2/                 # v2 robot description package
+    My_Robotv3/                 # v3 robot description package
+    nav2_stack/                 # Nav2 bringup wrapper
+    ros2_assessment_world-main/ # assessment_world (Gazebo environment)
 ```
-
-**Notes**
-- Package names (from `package.xml`): `nav2_stack`, `assessment_world`.
-- `src/My_Robot/` currently exists as a workspace folder for robot assets (URDF, meshes, launch, etc.).
 
 ---
 
@@ -73,153 +196,121 @@ PDE4430_WS/
 
 - ROS 2 Jazzy
 - Gazebo Harmonic (`gz sim`)
-- `nav2_bringup`
-- `slam_toolbox` (for mapping/localisation)
-- `ros_gz` bridge packages (for Gazebo ↔ ROS 2 integration), as required by your setup
+- `ros_gz` packages (`ros_gz_sim`, `ros_gz_bridge`, `ros_gz_interfaces`)
+- `xacro`
+- `slam_toolbox`
 
 ### Build
 
 ```bash
-cd PDE4430_WS
+cd ~/PDE4430_WS
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-### Launch the Assessment World
+### World Only
 
-Recommended (world + automatic sphere spawning):
+```bash
+ros2 launch assessment_world assessment_world.launch.py
+```
+
+### World + Spheres
 
 ```bash
 ros2 launch assessment_world assessment_complete.launch.py
 ```
 
-Or split launch (useful when mapping without spheres):
+### Baseline Robot (with SLAM + RViz)
 
 ```bash
-# Terminal 1
-ros2 launch assessment_world assessment_world.launch.py
-
-# Terminal 2 (after Gazebo is fully loaded)
-ros2 launch assessment_world spawn_spheres.launch.py
-```
-
-### Launch Nav2 (with RViz)
-
-This workspace provides a lightweight Nav2 bringup wrapper:
-
-```bash
-ros2 launch nav2_stack nav2.launch.py
-```
-
-Optional: override the map and/or parameters:
-
-```bash
-ros2 launch nav2_stack nav2.launch.py \
-  map:=$(ros2 pkg prefix --share nav2_stack)/config/map.yaml \
-  params_file:=$(ros2 pkg prefix --share nav2_stack)/config/nav2_params.yaml
+ros2 launch my_robot_description start.launch.py
 ```
 
 ---
 
-## Coursework Plan (Source Documentation)
+## Packages
 
-The following section is included from the coursework plan documentation page:
-`https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+### 1) `my_robot_description`
+**Location:** `src/My_Robot`
 
-### Verbatim Plan Text (Structured)
+Baseline robot description package with:
+- URDF/Xacro model + meshes
+- Gazebo Harmonic plugins (diff drive + lidar)
+- Launch files for RViz, Gazebo spawn, and SLAM toolbox
 
-This is the plan and approach for solving the PDE4431 Coursework by Bilal Baslar (M01099599).
+Key launch files:
+- `display.launch.py`
+- `gazebo.launch.py`
+- `start.launch.py`
+- `slam_gazebo.launch.py`
 
-#### Problem Breakdown
-**Overview:** Create a robot (URDF) that navigates autonomously, picks up balls from the world, and delivers them to the known goal.
+### 2) `my_robot_cam_udrf_description` (v2)
+**Location:** `src/My_Robotv2`
 
-#### Problem Identification & Solving
+Second iteration of the robot description (camera + arms + updated meshes).
 
-**URDF Problem**
-- Making body and gripping system
-- `base_link`
-- Joint limitations
-- Camera setup
-- Caster wheel setup
-- Differential-drive setup
-- LiDAR setup
-- Create camera publisher
+### 3) `my_robot_v3_description`
+**Location:** `src/My_Robotv3`
 
-**Teleoperate problem**
-- Use the pre-built teleop with `cmd_vel`
+Third iteration integrating v1 control/bridge with v2 body/arms/camera and updated launch files.
+Includes custom arm control services and Gazebo tuning.
 
-**SLAM problem**
-- Create map
-- Use to create a map: `async_slam_toolbox_node`
-- Use to localise: `localization_slam_toolbox_node`
+### 4) `assessment_world`
+**Location:** `src/ros2_assessment_world-main`
 
-**Nav2 problem**
-- To be studied
+Gazebo Harmonic assessment arena with obstacles and sphere spawner.
 
-**Ball Detection Problem**
-- Create (TBD)
+### 5) `nav2_stack`
+**Location:** `src/nav2_stack`
 
-**Pick and Place problem**
-- (TBD)
+Lightweight Nav2 bringup wrapper and RViz configuration.
 
-**Launch structure problem**
-- (TBD)
+---
 
-**Documentation Problem**
-- (TBD)
+## Topics and Frames
 
-#### URDF Plan
-- `URDF_1`: (TBD)
-- `URDF_2`: (TBD)
-- Added camera
-- Added arms to hold balls; arms move ~30° to close, compatible with all ball sizes
+Typical bridged topics:
+- `/cmd_vel` (ROS -> Gazebo)
+- `/odom` (Gazebo -> ROS)
+- `/scan` (Gazebo -> ROS)
+- `/tf`, `/joint_states`, `/clock`
+
+Common frames:
+- `base_link`, `lidar_1`, `odom`, `map`
+
+---
+
+## Compliance (Gazebo Ground Truth)
+
+The running system does **not** use Gazebo model pose/state topics to locate spheres. It relies on standard robot
+sensors and ROS interfaces. Gazebo ground‑truth topics are reserved for debugging/verification only.
 
 ---
 
 ## Figures (Placeholders)
 
-Add figures into `docs/figures/` and update the links below. Leave captions intact for report-quality documentation.
+Add figures into `docs/figures/` and update the links below.
 
-### Figure 1 — System Architecture
-
-![Figure 1: System-level architecture showing Gazebo world, ROS 2 nodes, Nav2, SLAM toolbox, and perception/manipulation pipelines.](docs/figures/fig01_system_architecture.png)
-
-
-### Figure 2 — Robot URDF Overview
-
-![Figure 2: URDF model overview (links/joints, sensors, gripper/arms).](docs/figures/fig02_urdf_overview.png)
-
-
-### Figure 3 — SLAM Map Output
-
-![Figure 3: Generated occupancy grid map and localisation status.](docs/figures/fig03_slam_map.png)
-
-
-### Figure 4 — Navigation Stack in RViz
-
-![Figure 4: Nav2 costmaps, global plan, and goal execution visualised in RViz.](docs/figures/fig04_nav2_rviz.png)
-
-
-### Figure 5 — Ball Detection
-
-![Figure 5: Example detection output (camera view + detected spheres).](docs/figures/fig05_ball_detection.png)
-
-
-### Figure 6 — Pick-and-Place / Delivery
-
-![Figure 6: Ball collection and delivery sequence to the goal pen.](docs/figures/fig06_pick_place.png)
+- `docs/figures/fig01_system_architecture.png`
+- `docs/figures/fig02_urdf_overview.png`
+- `docs/figures/fig03_slam_map.png`
+- `docs/figures/fig04_nav2_rviz.png`
+- `docs/figures/fig05_ball_detection.png`
+- `docs/figures/fig06_pick_place.png`
 
 ---
 
 ## Limitations & Next Steps
 
-- `src/My_Robot/` is currently a placeholder directory; add your robot description package (URDF/Xacro, meshes, plugins, and launch files).
-- The plan items marked **(TBD)** are intentionally left open to be filled with implementation details (packages, topics, parameters, and evaluation results).
-- Consider adding a dedicated `docs/` report (PDF) and a reproducible experiment log (commands, seeds, environment versions).
+- Autonomy for ball detection and collection is not yet integrated.
+- ros2_control controllers for arms are not implemented.
+- Add evaluation artifacts (maps, screenshots, RQT graph, video link) to strengthen documentation.
 
 ---
 
 ## References
 
-- PDE4431 CW1 plan page: `https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
-- Assessment world package documentation: `src/ros2_assessment_world-main/README.md`
+- Coursework brief: `docs/DBI_PDE4430_CW.pdf`
+- Worksheet: `docs/CW_Worksheet.pdf`
+- Assessment world docs: `src/ros2_assessment_world-main/README.md`
+- Robot package docs: `src/My_Robot/README.md`
