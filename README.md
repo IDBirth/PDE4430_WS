@@ -15,7 +15,7 @@ spawned into the assessment world, teleoperated, and used as a baseline for mapp
 The system is structured for clear reproducibility and extensibility toward ball detection and manipulation.
 
 **Keywords:** ROS 2 Jazzy, Gazebo Harmonic, URDF/Xacro, ros_gz, SLAM Toolbox, teleoperation
-
+but
 ---
 
 ## Repository Structure (Actual)
