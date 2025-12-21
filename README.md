@@ -6,7 +6,7 @@
 **Workspace:** `PDE4430_WS`
 
 **Submission:**
-- Blog Link: https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html`
+- Blog Link: https://bilal-baslar-mdx.blogspot.com/p/pde4431-cw1-plan.html
 
 Github: 
 - For Working SLAM and Telop: https://github.com/IDBirth/PDE4430_WS/tree/basics?tab=readme-ov-file
